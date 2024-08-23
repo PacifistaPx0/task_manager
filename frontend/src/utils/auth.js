@@ -56,20 +56,30 @@ export const logout = () => {
 
 // Set user data if tokens are valid, refresh token if necessary
 export const setUser = async () => {
-  const access_token = Cookie.get("access_token");
-  const refresh_token = Cookie.get("refresh_token");
-
-  if (!access_token || !refresh_token) {
-    //if token doesnt exist or expired, return
-    return;
-  }
-
-  if (isAccessTokenExpired(access_token)) {
-    const response = getRefreshedToken(refresh_token); // Refresh token if expired
-    setAuthUser(response.access, response.refresh);
-  } else {
-    setAuthUser(access_token, refresh_token); // Set user data with current tokens
-  }
+    const access_token = Cookie.get("access_token");
+    const refresh_token = Cookie.get("refresh_token");
+  
+    if (!access_token || !refresh_token) {
+      // Clear any user-related state and return if no tokens exist
+      useAuthStore.getState().setUser(null);
+      useAuthStore.getState().setLoading(false); // Ensure loading state is set to false
+      return;
+    }
+  
+    // Proceed with token checks if tokens are present
+    if (isAccessTokenExpired(access_token)) {
+      try {
+        const response = await getRefreshedToken(refresh_token);
+        setAuthUser(response.access, response.refresh);
+      } catch (error) {
+        console.error('Failed to refresh token:', error);
+        useAuthStore.getState().setUser(null);
+        useAuthStore.getState().setLoading(false);
+        return;
+      }
+    } else {
+      setAuthUser(access_token, refresh_token);
+    }
 };
 
 // Store tokens in cookies and update user data in store
@@ -101,14 +111,12 @@ export const getRefreshedToken = async () => {
   return response.data;
 };
 
-// Check if the access token has expired
 export const isAccessTokenExpired = (access_token) => {
-  try {
-    const decodedToken = jwt_decode(access_token);
-    return decodedToken.exp < Date.now() / 1000; // Compare expiration time with current time
-  } catch (error) {
-    console.log(error);
-    return true; // Consider expired if there's an error
-  }
-};
-    
+    try {
+      const decodedToken = jwt_decode(access_token);
+      return decodedToken.exp < Date.now() / 1000;
+    } catch (error) {
+      console.log(error);
+      return true;
+    }
+  };

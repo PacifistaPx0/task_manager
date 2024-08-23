@@ -1,22 +1,35 @@
-import { useEffect, useState } from "react";
-import { setUser } from "../utils/auth";
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { setUser, getRefreshedToken } from '../utils/auth';
 
-const MainWrapper = ({ children }) => {
-  const [loading, setLoading] = useState(true);
+function MainWrapper({ children }) {
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const handler = async () => {
-      setLoading(true);
+    const initializeUser = async () => {
+      const pathname = window.location.pathname;
+      const publicRoutes = ['/login/', '/register/'];
 
-      await setUser();
-
-      setLoading(false);
+      if (!publicRoutes.includes(pathname)) {
+        const token = localStorage.getItem('authToken');
+        
+        if (token) {
+          try {
+            const refreshedToken = await getRefreshedToken(token);
+            setUser(refreshedToken);
+          } catch (error) {
+            console.error("Token refresh failed:", error);
+            // Optionally, you can redirect to login or clear the invalid token here
+            navigate('/login');
+          }
+        }
+      }
     };
 
-    handler();
-  }, []);
+    initializeUser();
+  }, [navigate]);
 
-  return <>{loading ? null : children}</>;
-};
+  return <>{children}</>;
+}
 
 export default MainWrapper;
