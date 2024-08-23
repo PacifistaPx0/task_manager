@@ -41,7 +41,7 @@ class PasswordResetEmailVerifyView(generics.RetrieveAPIView):
             user.otp = generate_random_otp()
             user.save()
 
-            link = f"http://localhost:8000/create-new-password/?otp={user.otp}&uuid64={uuid64}&=refresh_token{refresh_token}"
+            link = f"http://localhost:5173/create-new-password/?otp={user.otp}&uuid64={uuid64}&refresh_token={refresh_token}"
             
             #after getting the link, send it to user via email
             context = {
@@ -62,8 +62,6 @@ class PasswordResetEmailVerifyView(generics.RetrieveAPIView):
 
             msg.attach_alternative(html_body, "text/html")
             msg.send()
-
-            print("link======",link)
 
         return user
     
