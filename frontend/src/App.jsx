@@ -8,6 +8,7 @@ import Login from "../src/views/auth/Login";
 import Logout from "./views/auth/Logout";
 import PasswordReset from "./views/auth/ForgotPassword";
 import CreateNewPassword from "./views/auth/CreateNewPassword";
+import Dashboard from "./views/user/Dashboard";
 
 function App() {
   return (
@@ -19,6 +20,8 @@ function App() {
           <Route path="/logout/" element={<Logout />} />
           <Route path="/forgot-password/" element={<PasswordReset />} />
           <Route path="/create-new-password/" element={<CreateNewPassword />} />
+
+          <Route path="/dashboard" element={ <PrivateRoute> <Dashboard /> </PrivateRoute> } /> 
         </Routes>
       </MainWrapper>
     </BrowserRouter>
