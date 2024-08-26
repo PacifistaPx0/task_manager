@@ -12,9 +12,9 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny, IsAu
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from api.serializers import UserSerializer, RegistrationSerializer, TokenObtainPairSerializer, TaskSerializer
+from api.serializers import UserSerializer, RegistrationSerializer, TokenObtainPairSerializer, TaskSerializer, CommentSerializer
 from userauths.models import User, Profile
-from task.models import Task
+from task.models import Task, Comment
 from api.permissions import IsTaskCreatorOrSuperUser, IsAssignedOrReadOnly 
 
 
@@ -121,9 +121,23 @@ class TaskListView(generics.ListCreateAPIView):
     
     #created_by field set to the authenticated user when creating a new task
     def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user)
+        task = serializer.save(created_by=self.request.user)
+
+        # Automatically add the creator to the assigned_users
+        task.assigned_users.add(self.request.user)
     
+import logging
+
+logger = logging.getLogger(__name__)
+
 class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated, IsAssignedOrReadOnly]
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            return self.destroy(request, *args, **kwargs)
+        except Exception as e:
+            logger.error(f"Error while deleting task: {e}")
+            return Response({"error": "Error deleting task."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

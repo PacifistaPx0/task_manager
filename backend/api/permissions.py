@@ -9,10 +9,15 @@ class IsTaskCreatorOrSuperUser(BasePermission):
     
 class IsAssignedOrReadOnly(BasePermission):
     def has_object_permission(self, request, view, obj):
-        # Superuser can do anything and created user can do anything to their own task
-        if request.user.is_superuser or request.user == obj.created_by:
+
+        # Allow superuser to do anything
+        if request.user.is_superuser:
             return True
 
+        # Allow the creator to do anything
+        if request.user == obj.created_by:
+            return True
+        
         # Allow read-only access for assigned users
         if request.method in ['GET', 'HEAD', 'OPTIONS']:
             return obj.assigned_users.filter(id=request.user.id).exists()

@@ -1,5 +1,5 @@
 from userauths.models import User, Profile
-from task.models import Task
+from task.models import Task, Comment
 from api.permissions import IsTaskCreatorOrSuperUser
 
 from rest_framework import serializers
@@ -57,11 +57,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return user
     
 class TaskSerializer(serializers.ModelSerializer):
-    class Meta:
-        created_by = serializers.ReadOnlyField(source='created_by.email')
+    created_by = serializers.ReadOnlyField(source='created_by.email')
 
+    class Meta:
         model = Task
-        fields = ['title', 'description','status', 'created_at', 'updated_at', 'due_date', 'assigned_users', 'completed_at']
+        fields = ['id', 'title', 'description','status', 'created_by', 'created_at', 'updated_at', 'due_date', 'assigned_users', 'completed_at']
 
         def update(self, instance, validated_data):
             # Check if the user is trying to update the assigned_users field
@@ -73,5 +73,12 @@ class TaskSerializer(serializers.ModelSerializer):
                     raise serializers.ValidationError("You do not have permission to assign users.")
             
             return super().update(instance, validated_data)
+        
+class CommentSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='author.username')
+
+    class Meta:
+        model = Comment
+        fields = "__all__"
     
 
