@@ -4,7 +4,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 
 from api.views import (RegistrationAPIView, MyTokenObtainPairAPIView, 
                        PasswordResetEmailVerifyView, PasswordChangeView,
-                       TaskListView, TaskDetailView)
+                       TaskListView, TaskDetailView, CommentListView, CommentDetailView)
 
 
 urlpatterns = [
@@ -15,5 +15,7 @@ urlpatterns = [
     path('user/password-change/', PasswordChangeView.as_view(), name='password-change'),
 
     path('tasks/', TaskListView.as_view(), name='task-list'),
-    path('tasks/<int:pk>/', TaskDetailView.as_view(), name='task-detail')
+    path('tasks/<int:pk>/', TaskDetailView.as_view(), name='task-detail'),
+    path('tasks/<int:task_id>/comments/', CommentListView.as_view(), name='comment-list'),
+    path('tasks/<int:task_id>/comments/<int:pk>/', CommentDetailView.as_view(), name='comment-detail'),
 ]

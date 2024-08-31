@@ -63,22 +63,24 @@ class TaskSerializer(serializers.ModelSerializer):
         model = Task
         fields = ['id', 'title', 'description','status', 'created_by', 'created_at', 'updated_at', 'due_date', 'assigned_users', 'completed_at']
 
-        def update(self, instance, validated_data):
-            # Check if the user is trying to update the assigned_users field
-            request = self.context.get('request')
-            if 'assigned_users' in validated_data:
-                # Apply the custom permission
-                permission = IsTaskCreatorOrSuperUser()
-                if not permission.has_object_permission(request, None, instance):
-                    raise serializers.ValidationError("You do not have permission to assign users.")
-            
-            return super().update(instance, validated_data)
+    # def update(self, instance, validated_data):
+    #     # Check if the user is trying to update the assigned_users field
+    #     request = self.context.get('request')
+    #     if 'assigned_users' in validated_data:
+    #         # Apply the custom permission
+    #         permission = IsTaskCreatorOrSuperUser()
+    #         if not permission.has_object_permission(request, None, instance):
+    #             raise serializers.ValidationError("You do not have permission to assign users.")
+        
+    #     return super().update(instance, validated_data)
         
 class CommentSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='author.username')
+    user = serializers.ReadOnlyField(source='user.username')
+    created_at = serializers.ReadOnlyField()
 
     class Meta:
         model = Comment
         fields = "__all__"
+        read_only_fields = ['task', 'user', 'created_at']
     
 

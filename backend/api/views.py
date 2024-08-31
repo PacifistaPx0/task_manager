@@ -5,7 +5,7 @@ from django.template.loader import render_to_string
 from django.shortcuts import render
 from django.core.mail import EmailMultiAlternatives
 
-
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework import status, generics, serializers
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny, IsAuthenticated, IsAdminUser
@@ -15,7 +15,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from api.serializers import UserSerializer, RegistrationSerializer, TokenObtainPairSerializer, TaskSerializer, CommentSerializer
 from userauths.models import User, Profile
 from task.models import Task, Comment
-from api.permissions import IsTaskCreatorOrSuperUser, IsAssignedOrReadOnly 
+from api.permissions import IsTaskCreatorOrSuperUser, IsAssigned, IsCommentOwnerOrReadOnly
 
 
 def generate_random_otp(length=6):
@@ -125,19 +125,39 @@ class TaskListView(generics.ListCreateAPIView):
 
         # Automatically add the creator to the assigned_users
         task.assigned_users.add(self.request.user)
-    
-import logging
 
-logger = logging.getLogger(__name__)
 
 class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
-    permission_classes = [IsAuthenticated, IsAssignedOrReadOnly]
+    permission_classes = [IsAuthenticated, IsAssigned]
 
-    def delete(self, request, *args, **kwargs):
-        try:
-            return self.destroy(request, *args, **kwargs)
-        except Exception as e:
-            logger.error(f"Error while deleting task: {e}")
-            return Response({"error": "Error deleting task."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+class CommentListView(generics.ListCreateAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        task_id = self.kwargs['task_id']
+        task = Task.objects.get(pk=task_id)
+
+        # Check if the user has permission to view the task
+        if not self.request.user.is_superuser and self.request.user != task.created_by:
+            if not task.assigned_users.filter(id=self.request.user.id).exists():
+                raise PermissionDenied("You do not have permission to view comments for this task.")
+        return Comment.objects.filter(task_id=task_id)
+    
+    def perform_create(self, serializer):
+        task_id = self.kwargs['task_id']
+        task = Task.objects.get(pk=task_id)
+
+         # Check if the user has permission to comment on the task
+        if not self.request.user.is_superuser and self.request.user != task.created_by:
+            if not task.assigned_users.filter(id=self.request.user.id).exists():
+                raise PermissionDenied("You do not have permission to comment on this task.")
+
+        serializer.save(user=self.request.user, task=task)
+
+class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated, IsCommentOwnerOrReadOnly]

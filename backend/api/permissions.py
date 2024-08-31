@@ -7,7 +7,7 @@ class IsTaskCreatorOrSuperUser(BasePermission):
             return True
         return False
     
-class IsAssignedOrReadOnly(BasePermission):
+class IsAssigned(BasePermission):
     def has_object_permission(self, request, view, obj):
 
         # Allow superuser to do anything
@@ -24,10 +24,31 @@ class IsAssignedOrReadOnly(BasePermission):
 
         # Allow edit access if the user is assigned to the task
         if request.method in ['PUT', 'PATCH']:
-            return obj.assigned_users.filter(id=request.user.id).exists()
+            if 'status' in request.data:
+                return obj.assigned_users.filter(id=request.user.id).exists()
 
-        # Block delete access
-        if request.method == 'DELETE':
-            return False
+        # # Block delete access
+        # if request.method == 'DELETE':
+        #     return False
+
+        return False
+    
+class IsCommentOwnerOrReadOnly(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        # Allow superusers to do anything
+        if request.user.is_superuser:
+            return True
+
+        # Allow the comment owner to delete their own comment
+        if request.method in ['DELETE'] and obj.user == request.user:
+            return True
+
+        # Allow task creator to delete any comments
+        if request.method in ['DELETE'] and obj.task.created_by == request.user:
+            return True
+
+        # Allow read-only access for everyone else
+        if request.method in ['GET', 'HEAD', 'OPTIONS']:
+            return True
 
         return False
