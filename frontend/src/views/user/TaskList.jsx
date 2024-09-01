@@ -7,13 +7,13 @@ import { FaCheckCircle, FaHourglassHalf, FaClipboardList } from 'react-icons/fa'
 
 function TaskList() {
     const [tasks, setTasks] = useState([]);
-    const axiosInstance = useAxios(); // Use the Axios instance
+    const axiosInstance = useAxios();
 
     const fetchTaskData = () => {
         axiosInstance
             .get('tasks/')
             .then((res) => {
-                setTasks(res.data); // Directly set the tasks state with the returned data
+                setTasks(res.data);
             })
             .catch((error) => {
                 console.error('Failed to fetch tasks', error);
@@ -37,21 +37,23 @@ function TaskList() {
                                 {tasks.length > 0 ? (
                                     tasks.map((task) => (
                                         <div key={task.id} className="col-md-6">
-                                            <div className="card shadow-sm border-0 h-100">
-                                                <div className="card-body d-flex flex-column">
-                                                    <div className="d-flex justify-content-between align-items-start">
-                                                        <h5 className="card-title">{task.title}</h5>
-                                                        <span className={`badge bg-${getStatusClass(task.status)}`}>
-                                                            {task.status}
-                                                        </span>
-                                                    </div>
-                                                    <p className="card-text text-muted mb-4">{task.description || 'No description provided.'}</p>
-                                                    <div className="mt-auto d-flex justify-content-between align-items-center">
-                                                        <span className="text-muted small">Due: {task.due_date || 'N/A'}</span>
-                                                        {getStatusIcon(task.status)}
+                                            <Link to={`/tasks/${task.id}`} className="text-decoration-none">
+                                                <div className="card shadow-sm border-0 h-100">
+                                                    <div className="card-body d-flex flex-column">
+                                                        <div className="d-flex justify-content-between align-items-start">
+                                                            <h5 className="card-title text-dark">{task.title}</h5>
+                                                            <span className={`badge bg-${getStatusClass(task.status)}`}>
+                                                                {task.status}
+                                                            </span>
+                                                        </div>
+                                                        <p className="card-text text-muted mb-4">{task.description || 'No description provided.'}</p>
+                                                        <div className="mt-auto d-flex justify-content-between align-items-center">
+                                                            <span className="text-muted small">Due: {task.due_date || 'N/A'}</span>
+                                                            {getStatusIcon(task.status)}
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </Link>
                                         </div>
                                     ))
                                 ) : (

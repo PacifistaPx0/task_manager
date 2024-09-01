@@ -10,7 +10,8 @@ import PasswordReset from "./views/auth/ForgotPassword";
 import CreateNewPassword from "./views/auth/CreateNewPassword";
 import Dashboard from "./views/user/Dashboard";
 import TaskList from "./views/user/TaskList";
-// import TaskDetail from "./views/user/TaskDetail";
+import TaskDetail from "./views/user/TaskDetail";
+
 
 function App() {
   return (
@@ -27,7 +28,7 @@ function App() {
           {/* Dashboard and Task Routes */}
           <Route path="/dashboard" element={ <PrivateRoute> <Dashboard /> </PrivateRoute> } /> 
           <Route path="/tasks/" element={ <PrivateRoute> <TaskList /> </PrivateRoute> } />
-          {/* <Route path="/tasks/:taskId/" element={ <PrivateRoute> <TaskDetail /> </PrivateRoute> } /> */}
+          <Route path="/tasks/:taskId/" element={ <PrivateRoute> <TaskDetail /> </PrivateRoute> } />
         </Routes>
       </MainWrapper>
     </BrowserRouter>
