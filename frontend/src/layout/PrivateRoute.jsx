@@ -1,16 +1,36 @@
+import { useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import {useAuthStore} from '../store/auth'; // Adjust the import path 
+import { useAuthStore } from '../store/auth';
+import axios from 'axios';
+import { API_BASE_URL } from '../utils/constants';
 
 const PrivateRoute = ({ children }) => {
-  const { allUserData } = useAuthStore();
+  const { allUserData, setUser } = useAuthStore();
+  const refreshToken = allUserData?.refresh;
 
-  // If user is not logged in, redirect to the login page
+  const validateToken = async () => {
+    if (!refreshToken) return;
+
+    try {
+      const response = await axios.post(`${API_BASE_URL}user/token/refresh/`, {
+        refresh: refreshToken,
+      });
+      setUser(response.data);
+    } catch (error) {
+      console.error('Token validation failed: ', error);
+    }
+  };
+
+  useEffect(() => {
+    validateToken();
+  }, []);
+
   if (!allUserData) {
     return <Navigate to="/login" replace />;
   }
 
-  // If user is logged in, render the children components (like Dashboard)
   return children;
 };
 
 export default PrivateRoute;
+
