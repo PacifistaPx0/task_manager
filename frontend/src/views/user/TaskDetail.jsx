@@ -44,7 +44,7 @@ function TaskDetail() {
     return (
         <>
             <BaseHeader />
-            <section className="container d-flex flex-column" style={{ marginTop: "100px" }}>
+            <section className="container d-flex flex-column vh-100" style={{ marginTop: "150px" }}>
                 <div className="container my-5">
                     <div className="card shadow-sm border-0">
                         <div className="card-body">

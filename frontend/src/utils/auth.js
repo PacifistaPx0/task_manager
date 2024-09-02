@@ -108,6 +108,7 @@ export const getRefreshedToken = async () => {
   const response = await axios.post(`user/token/refresh/`, {
     refresh: refresh_token,
   });
+  console.log('Token refresh response:', response); // Log the entire response
   return response.data;
 };
 
