@@ -54,9 +54,24 @@ const useAxios = () => {
     async (error) => {
       if (error.response && error.response.status === 401) {
         console.error('Unauthorized - likely due to token issues:', error.response);
-        Cookies.remove('access_token');
-        Cookies.remove('refresh_token');
-        //window.location.href = '/login'; // Redirect to login page
+  
+        try {
+          // Try to refresh the token before taking any action
+          const response = await getRefreshedToken();
+          if (response && response.access) {
+            // Retry the original request with the new token
+            error.config.headers['Authorization'] = `Bearer ${response.access}`;
+            return axiosInstance(error.config);
+          }
+        } catch (refreshError) {
+          console.error('Token refresh failed:', refreshError);
+          // Now, after refresh fails, remove tokens and redirect
+          Cookies.remove('access_token');
+          Cookies.remove('refresh_token');
+          // If you prefer to use the logout function, call it here instead:
+          // logout();
+          window.location.href = '/login'; // Redirect to login page
+        }
       }
       return Promise.reject(error);
     }
