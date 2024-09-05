@@ -18,6 +18,14 @@ from task.models import Task, Comment
 from api.permissions import IsTaskCreatorOrSuperUser, IsAssigned, IsCommentOwnerOrReadOnly
 
 
+
+class UserDetailView(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserSerializer
+    def get_object(self):
+        return self.request.user
+    
 def generate_random_otp(length=6):
     otp = "".join([str(random.randint(0, 9)) for _ in range(length)])
     return otp

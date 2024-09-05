@@ -24,7 +24,7 @@ class IsAssigned(BasePermission):
 
         # Allow edit access if the user is assigned to the task
         if request.method in ['PUT', 'PATCH']:
-            if 'status' in request.data:
+            if 'status' in request.data or 'assigned_users' in request.data:
                 return obj.assigned_users.filter(id=request.user.id).exists()
 
         # # Block delete access

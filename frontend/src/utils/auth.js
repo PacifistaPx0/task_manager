@@ -14,6 +14,9 @@ export const login = async (email, password) => {
 
     if (status === 200) {
       setAuthUser(data.access, data.refresh); // Set tokens and user data
+      
+      // Fetch user metadata after setting tokens
+      await useAuthStore.getState().fetchUserMetadata();
     }
 
     return { data, error: null };
@@ -60,13 +63,11 @@ export const setUser = async () => {
     const refresh_token = Cookie.get("refresh_token");
   
     if (!access_token || !refresh_token) {
-      // Clear any user-related state and return if no tokens exist
       useAuthStore.getState().setUser(null);
-      useAuthStore.getState().setLoading(false); // Ensure loading state is set to false
+      useAuthStore.getState().setLoading(false);
       return;
     }
   
-    // Proceed with token checks if tokens are present
     if (isAccessTokenExpired(access_token)) {
       try {
         const response = await getRefreshedToken(refresh_token);
@@ -83,14 +84,14 @@ export const setUser = async () => {
 };
 
 // Store tokens in cookies and update user data in store
-export const setAuthUser = (access_token, refresh_token) => {
+export const setAuthUser = async (access_token, refresh_token) => {
   Cookie.set("access_token", access_token, {
-    expires: 1, // 1 day expiry
+    expires: 1,
     secure: true,
   });
 
   Cookie.set("refresh_token", refresh_token, {
-    expires: 7, // 7 days expiry
+    expires: 7,
     secure: true,
   });
 
@@ -98,7 +99,11 @@ export const setAuthUser = (access_token, refresh_token) => {
 
   if (user) {
     useAuthStore.getState().setUser(user); // Set user data in store
+    
+    // Fetch full user metadata after decoding JWT
+    await useAuthStore.getState().fetchUserMetadata();
   }
+  
   useAuthStore.getState().setLoading(false); // Stop loading state
 };
 
@@ -108,16 +113,15 @@ export const getRefreshedToken = async () => {
   const response = await axios.post(`user/token/refresh/`, {
     refresh: refresh_token,
   });
-  console.log('Token refresh response:', response); // Log the entire response
   return response.data;
 };
 
 export const isAccessTokenExpired = (access_token) => {
-    try {
-      const decodedToken = jwt_decode(access_token);
-      return decodedToken.exp < Date.now() / 1000;
-    } catch (error) {
-      console.log(error);
-      return true;
-    }
-  };
+  try {
+    const decodedToken = jwt_decode(access_token);
+    return decodedToken.exp < Date.now() / 1000;
+  } catch (error) {
+    console.log(error);
+    return true;
+  }
+};

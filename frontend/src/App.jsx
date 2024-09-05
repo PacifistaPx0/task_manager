@@ -11,6 +11,7 @@ import CreateNewPassword from "./views/auth/CreateNewPassword";
 import Dashboard from "./views/user/Dashboard";
 import TaskList from "./views/user/TaskList";
 import TaskDetail from "./views/user/TaskDetail";
+import CreateTask from "./views/user/CreateTask";
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
           <Route path="/dashboard" element={ <PrivateRoute> <Dashboard /> </PrivateRoute> } /> 
           <Route path="/tasks/" element={ <PrivateRoute> <TaskList /> </PrivateRoute> } />
           <Route path="/tasks/:taskId/" element={ <PrivateRoute> <TaskDetail /> </PrivateRoute> } />
+          <Route path="/create-task/" element={ <PrivateRoute> <CreateTask /> </PrivateRoute> } />
         </Routes>
       </MainWrapper>
     </BrowserRouter>
