@@ -37,7 +37,7 @@ const useAxios = () => {
         console.error('Failed to refresh token:', error);
         Cookies.remove('access_token');
         Cookies.remove('refresh_token');
-        // window.location.href = '/login'; // Redirect to login page
+        window.location.href = '/login'; // Redirect to login page
         return Promise.reject(error);
       }
     } else {

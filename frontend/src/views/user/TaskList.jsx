@@ -33,6 +33,12 @@ function TaskList() {
                         <div className="col-md-10">
                             <h1 className="fw-bold text-center">Your Tasks</h1>
                             <p className="lead text-center mb-4">Manage and track your tasks below.</p>
+                            
+                            {/* Conditionally render the Create Task button */}
+                            {tasks.length > 0 && (
+                                <Link to="/create-task" className="btn btn-primary mb-4">Create a Task</Link>
+                            )}
+                            
                             <div className="row gy-4">
                                 {tasks.length > 0 ? (
                                     tasks.map((task) => (
