@@ -10,6 +10,7 @@ function TaskDetail() {
     const navigate = useNavigate();
     const [task, setTask] = useState(null);
     const [comments, setComments] = useState([]);
+    const [newComment, setNewComment] = useState(""); // State for the new comment
     const axiosInstance = useAxios();
 
     const user = useAuthStore((state) => state.user); // Get the user object directly
@@ -58,7 +59,7 @@ function TaskDetail() {
     const handleRemoveAssignment = async () => {
         if (window.confirm("Are you sure you want to remove yourself from this task?")) {
             try {
-                const updatedUsers = task.assigned_users.filter((userId) => userId !== user_id);
+                const updatedUsers = task.assigned_users.filter((user) => user.id !== user_id);
                 await axiosInstance.patch(`/tasks/${taskId}/`, { assigned_users: updatedUsers });
                 navigate('/tasks'); // Redirect after removal
             } catch (error) {
@@ -67,23 +68,25 @@ function TaskDetail() {
         }
     };
 
+    const handleCommentSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axiosInstance.post(`tasks/${taskId}/comments/`, {
+                content: newComment,
+            });
+            setComments([...comments, response.data]); // Append new comment to the list
+            setNewComment(""); // Clear the comment input
+        } catch (error) {
+            console.error("Failed to submit comment", error);
+        }
+    };
+
     if (!task) {
         return <p>Loading task details...</p>;
     }
 
-    // Debugging: Log user information and task creator info
-    console.log("User ID:", user_id);
-    console.log("Username:", username);
-    console.log("Task Created By:", task.created_by);
-    console.log("Assigned Users:", task.assigned_users);
-    console.log("User Email:", user().email);
-
     const isTaskCreator = task.created_by === user().email;
-    const isAssignedUser = task.assigned_users.includes(user_id);
-
-    // Debugging: Log the results of the checks
-    console.log("Is Task Creator:", isTaskCreator);
-    console.log("Is Assigned User:", isAssignedUser);
+    const isAssignedUser = task.assigned_users.some((assignedUser) => assignedUser.id === user_id);
 
     return (
         <>
@@ -96,6 +99,25 @@ function TaskDetail() {
                             <p className="text-muted mb-4">{task.description || "No description provided."}</p>
                             <p className="mb-2"><strong>Status:</strong> <span className={`badge bg-${getStatusClass(task.status)}`}>{task.status}</span></p>
                             <p><strong>Due Date:</strong> {task.due_date || "N/A"}</p>
+
+                            {/* Display assigned users */}
+                            <div className="mt-4">
+                                <h5 className="fw-bold">Assigned Users:</h5>
+                                {task.assigned_users.length > 0 ? (
+                                    <ul className="list-group mt-2">
+                                        {task.assigned_users.map((user) => (
+                                            <li key={user.id} className="list-group-item d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <strong>{user.full_name}</strong> <span className="text-muted">({user.username})</span><br />
+                                                    <small className="text-muted">{user.email}</small>
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <p className="text-muted">No users assigned to this task.</p>
+                                )}
+                            </div>
                         </div>
                     </div>
 
@@ -118,13 +140,35 @@ function TaskDetail() {
                                 {comments.map((comment) => (
                                     <li key={comment.id} className="list-group-item">
                                         <p className="mb-1">{comment.content}</p>
-                                        <small className="text-muted">- {comment.user}</small>
+                                        <small className="text-muted">
+                                            - {comment.user} on {new Date(comment.created_at).toLocaleString()}
+                                        </small>
                                     </li>
                                 ))}
                             </ul>
                         ) : (
                             <p className="text-muted mt-3">No comments available.</p>
                         )}
+                    </div>
+
+                    {/* Comment form */}
+                    <div className="mt-4">
+                        <h5 className="fw-bold">Leave a Comment</h5>
+                        <form onSubmit={handleCommentSubmit}>
+                            <div className="mb-3">
+                                <textarea
+                                    className="form-control"
+                                    rows="3"
+                                    value={newComment}
+                                    onChange={(e) => setNewComment(e.target.value)}
+                                    placeholder="Write your comment here..."
+                                    required
+                                />
+                            </div>
+                            <button type="submit" className="btn btn-primary">
+                                Submit Comment
+                            </button>
+                        </form>
                     </div>
                 </div>
             </section>

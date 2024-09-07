@@ -58,6 +58,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
     
 class TaskSerializer(serializers.ModelSerializer):
     created_by = serializers.ReadOnlyField(source='created_by.email')
+    assigned_users = UserSerializer(many=True, read_only=True)
 
     class Meta:
         model = Task
