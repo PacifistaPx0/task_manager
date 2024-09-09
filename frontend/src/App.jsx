@@ -1,4 +1,6 @@
+import React, { useEffect } from 'react';
 import { Route, Routes, BrowserRouter } from "react-router-dom"
+import { useAuthStore } from "./store/auth";
 
 import MainWrapper from "./layout/MainWrapper";
 import PrivateRoute from "./layout/PrivateRoute";
@@ -16,6 +18,14 @@ import CreateTask from "./views/user/CreateTask";
 
 
 function App() {
+
+  const initializeAuth = useAuthStore((state) => state.initializeAuth);
+
+  useEffect(() => {
+    initializeAuth(); // Load user from token on app load
+  }, [initializeAuth]);
+
+
   return (
     <BrowserRouter>
       <MainWrapper>
