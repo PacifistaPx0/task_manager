@@ -4,6 +4,7 @@ import { useAuthStore } from "./store/auth";
 
 import MainWrapper from "./layout/MainWrapper";
 import PrivateRoute from "./layout/PrivateRoute";
+import Layout from './views/partials/Layout';
 
 import IndexPage from "./views/base/IndexPage";
 import Register from "../src/views/auth/Register";
@@ -41,10 +42,10 @@ function App() {
           <Route path="/create-new-password/" element={<CreateNewPassword />} />
 
           {/* Dashboard and Task Routes */}
-          <Route path="/dashboard" element={ <PrivateRoute> <Dashboard /> </PrivateRoute> } /> 
-          <Route path="/tasks/" element={ <PrivateRoute> <TaskList /> </PrivateRoute> } />
-          <Route path="/tasks/:taskId/" element={ <PrivateRoute> <TaskDetail /> </PrivateRoute> } />
-          <Route path="/create-task/" element={ <PrivateRoute> <CreateTask /> </PrivateRoute> } />
+          <Route path="/dashboard" element={<PrivateRoute><Layout><Dashboard /></Layout></PrivateRoute>} />
+          <Route path="/tasks/" element={<PrivateRoute><Layout><TaskList /></Layout></PrivateRoute>} />
+          <Route path="/tasks/:taskId/" element={<PrivateRoute><Layout><TaskDetail /></Layout></PrivateRoute>} />
+          <Route path="/create-task/" element={<PrivateRoute><Layout><CreateTask /></Layout></PrivateRoute>} />
         </Routes>
       </MainWrapper>
     </BrowserRouter>

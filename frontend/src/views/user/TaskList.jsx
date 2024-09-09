@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import BaseHeader from "../partials/BaseHeader";
-import BaseFooter from "../partials/BaseFooter";
 import useAxios from '../../utils/useAxios';
 import { FaCheckCircle, FaHourglassHalf, FaClipboardList } from 'react-icons/fa';
 
@@ -26,78 +24,56 @@ function TaskList() {
 
     return (
         <>
-            <BaseHeader />
-            <section className="container d-flex flex-column vh-100" style={{ marginTop: "150px" }}>
-                <div className="container my-5">
-                    <div className="row justify-content-center">
-                        <div className="col-md-10">
-                            <h1 className="fw-bold text-center">Your Tasks</h1>
-                            <p className="lead text-center mb-4">Manage and track your tasks below.</p>
-                            
-                            {/* Conditionally render the Create Task button */}
-                            {tasks.length > 0 && (
-                                <Link to="/create-task" className="btn btn-primary mb-4">Create a Task</Link>
-                            )}
-                            
-                            <div className="row gy-4">
-                                {tasks.length > 0 ? (
-                                    tasks.map((task) => (
-                                        <div key={task.id} className="col-md-6">
-                                            <Link to={`/tasks/${task.id}`} className="text-decoration-none">
-                                                <div className="card shadow-sm border-0 h-100">
-                                                    <div className="card-body d-flex flex-column">
-                                                        <div className="d-flex justify-content-between align-items-start">
-                                                            <h5 className="card-title text-dark">{task.title}</h5>
-                                                            <span className={`badge bg-${getStatusClass(task.status)}`}>
-                                                                {task.status}
-                                                            </span>
-                                                        </div>
-                                                        <p className="card-text text-muted mb-4">{task.description || 'No description provided.'}</p>
-                                                        <div className="mt-auto d-flex justify-content-between align-items-center">
-                                                            <span className="text-muted small">Due: {task.due_date || 'N/A'}</span>
-                                                            {getStatusIcon(task.status)}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </Link>
+            <section className="flex flex-col min-h-screen mt-20">
+                <div className="container mx-auto my-5 flex-grow">
+                    <div className="text-center">
+                        <h1 className="text-3xl font-bold mb-4">Your Tasks</h1>
+                        <p className="text-lg text-gray-600 mb-6">Manage and track your tasks below.</p>
+
+                        {/* Conditionally render the Create Task button */}
+                        {tasks.length > 0 && (
+                            <Link to="/create-task" className="btn btn-primary mb-4">Create a Task</Link>
+                        )}
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {tasks.length > 0 ? (
+                            tasks.map((task) => (
+                                <div key={task.id} className="bg-white shadow rounded-lg p-6">
+                                    <Link to={`/tasks/${task.id}`} className="text-decoration-none">
+                                        <h5 className="text-lg font-bold text-gray-900">{task.title}</h5>
+                                        <p className="text-sm text-gray-500 mb-4">
+                                            {task.description || 'No description provided.'}
+                                        </p>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-sm text-gray-600">Due: {task.due_date || 'N/A'}</span>
+                                            {getStatusIcon(task.status)}
                                         </div>
-                                    ))
-                                ) : (
-                                    <p className="text-center">No tasks available. <Link to="/create-task" className="btn btn-primary ms-2">Create a Task</Link></p>
-                                )}
-                            </div>
-                        </div>
+                                    </Link>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="text-center text-gray-600">No tasks available. 
+                                <Link to="/create-task" className="btn btn-primary ml-2">Create a Task</Link>
+                            </p>
+                        )}
                     </div>
                 </div>
             </section>
-            <BaseFooter />
         </>
     );
-}
-
-function getStatusClass(status) {
-    switch (status) {
-        case "todo":
-            return "secondary";
-        case "in_progress":
-            return "warning";
-        case "completed":
-            return "success";
-        default:
-            return "light";
-    }
 }
 
 function getStatusIcon(status) {
     switch (status) {
         case "todo":
-            return <FaClipboardList className="text-secondary" size={20} />;
+            return <FaClipboardList className="text-gray-400" size={20} />;
         case "in_progress":
-            return <FaHourglassHalf className="text-warning" size={20} />;
+            return <FaHourglassHalf className="text-yellow-400" size={20} />;
         case "completed":
-            return <FaCheckCircle className="text-success" size={20} />;
+            return <FaCheckCircle className="text-green-500" size={20} />;
         default:
-            return <FaClipboardList className="text-light" size={20} />;
+            return <FaClipboardList className="text-gray-200" size={20} />;
     }
 }
 

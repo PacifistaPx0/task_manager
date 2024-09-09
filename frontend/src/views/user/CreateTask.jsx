@@ -33,7 +33,6 @@ function CreateTask() {
 
     return (
         <>
-            <BaseHeader />
             <section className="container d-flex flex-column vh-100" style={{ marginTop: "150px" }}>
                 <div className="container my-5">
                     <div className="row justify-content-center">
@@ -90,7 +89,6 @@ function CreateTask() {
                     </div>
                 </div>
             </section>
-            <BaseFooter />
         </>
     );
 }
