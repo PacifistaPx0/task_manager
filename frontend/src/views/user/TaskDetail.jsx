@@ -13,7 +13,6 @@ function TaskDetail() {
 
     const user = useAuthStore((state) => state.user);
     const user_id = user().user_id;
-    const username = user().username;
 
     useEffect(() => {
         fetchTaskDetail();
@@ -86,82 +85,90 @@ function TaskDetail() {
     const isAssignedUser = task.assigned_users.some((assignedUser) => assignedUser.id === user_id);
 
     return (
-        <section className="flex flex-col min-h-screen mt-20">
-            <div className="container mx-auto flex-grow">
-                <div className="bg-white shadow-md rounded-lg p-6">
-                    <h1 className="text-3xl font-bold">{task.title}</h1>
+        <section className="min-h-screen flex flex-col mt-20">
+            <div className="container mx-auto flex-grow grid grid-cols-1 md:grid-cols-3 gap-8">
+                {/* Task Details Section */}
+                <div className="md:col-span-2 bg-white shadow-md rounded-lg p-6">
+                    <h1 className="text-3xl font-bold mb-4">{task.title}</h1>
                     <p className="text-gray-600 mb-4">{task.description || "No description provided."}</p>
                     <p className="mb-2">
-                        <strong>Status:</strong> <span className={`badge bg-${getStatusClass(task.status)}`}>{task.status}</span>
+                        <strong>Status:</strong>{" "}
+                        <span className={getStatusClass(task.status)}>
+                            {task.status.replace("_", " ")}
+                        </span>
                     </p>
                     <p>
                         <strong>Due Date:</strong> {task.due_date || "N/A"}
                     </p>
 
-                    {/* Display assigned users */}
-                    <div className="mt-4">
-                        <h5 className="text-xl font-semibold">Assigned Users:</h5>
-                        {task.assigned_users.length > 0 ? (
-                            <ul className="mt-2 space-y-2">
-                                {task.assigned_users.map((user) => (
-                                    <li key={user.id} className="bg-gray-100 p-3 rounded-md shadow-md">
-                                        <strong>{user.full_name}</strong> <span className="text-gray-500">({user.username})</span><br />
-                                        <small className="text-gray-400">{user.email}</small>
+                    {/* Buttons */}
+                    {isTaskCreator && (
+                        <button className="mt-6 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600" onClick={handleDeleteTask}>
+                            Delete Task
+                        </button>
+                    )}
+
+                    {!isTaskCreator && isAssignedUser && (
+                        <button className="mt-6 bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600" onClick={handleRemoveAssignment}>
+                            Remove Assignment
+                        </button>
+                    )}
+
+                    {/* Comments Section */}
+                    <div className="mt-6">
+                        <h2 className="text-2xl font-bold">Comments</h2>
+                        {comments.length > 0 ? (
+                            <ul className="space-y-4 mt-4">
+                                {comments.map((comment) => (
+                                    <li key={comment.id} className="bg-gray-100 p-4 rounded-md shadow-sm">
+                                        <p>{comment.content}</p>
+                                        <small className="text-gray-500">
+                                            - {comment.user} on {new Date(comment.created_at).toLocaleString()}
+                                        </small>
                                     </li>
                                 ))}
                             </ul>
                         ) : (
-                            <p className="text-gray-500">No users assigned to this task.</p>
+                            <p className="text-gray-500 mt-4">No comments available.</p>
                         )}
+                    </div>
+
+                    {/* Comment Form */}
+                    <div className="mt-6">
+                        <h5 className="text-xl font-bold">Leave a Comment</h5>
+                        <form onSubmit={handleCommentSubmit}>
+                            <textarea
+                                className="w-full p-3 border rounded mb-3"
+                                rows="4"
+                                value={newComment}
+                                onChange={(e) => setNewComment(e.target.value)}
+                                placeholder="Write your comment here..."
+                                required
+                            />
+                            <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
+                                Submit Comment
+                            </button>
+                        </form>
                     </div>
                 </div>
 
-                {/* Delete and Remove Assignment buttons */}
-                {isTaskCreator && (
-                    <button className="btn bg-red-500 text-white mt-3 py-2 px-4 rounded" onClick={handleDeleteTask}>
-                        Delete Task
-                    </button>
-                )}
-
-                {!isTaskCreator && isAssignedUser && (
-                    <button className="btn bg-yellow-500 text-white mt-3 py-2 px-4 rounded" onClick={handleRemoveAssignment}>
-                        Remove Assignment
-                    </button>
-                )}
-
-                {/* Comments Section */}
-                <div className="mt-6">
-                    <h2 className="text-2xl font-bold">Comments</h2>
-                    {comments.length > 0 ? (
-                        <ul className="space-y-4 mt-4">
-                            {comments.map((comment) => (
-                                <li key={comment.id} className="bg-gray-100 p-4 rounded-md shadow-sm">
-                                    <p>{comment.content}</p>
-                                    <small className="text-gray-500">- {comment.user} on {new Date(comment.created_at).toLocaleString()}</small>
+                {/* Assigned Users Section */}
+                <div className="bg-gray-50 shadow-lg rounded-lg p-6">
+                    <h5 className="text-xl font-semibold mb-4">Assigned Users</h5>
+                    {task.assigned_users.length > 0 ? (
+                        <ul className="space-y-4">
+                            {task.assigned_users.map((user) => (
+                                <li key={user.id} className="bg-white p-4 rounded-md shadow-md">
+                                    <strong>{user.full_name}</strong>{" "}
+                                    <span className="text-gray-500">({user.username})</span>
+                                    <br />
+                                    <small className="text-gray-400">{user.email}</small>
                                 </li>
                             ))}
                         </ul>
                     ) : (
-                        <p className="text-gray-500 mt-4">No comments available.</p>
+                        <p className="text-gray-500">No users assigned to this task.</p>
                     )}
-                </div>
-
-                {/* Comment form */}
-                <div className="mt-6">
-                    <h5 className="text-xl font-bold">Leave a Comment</h5>
-                    <form onSubmit={handleCommentSubmit}>
-                        <textarea
-                            className="w-full p-3 border rounded mb-3"
-                            rows="4"
-                            value={newComment}
-                            onChange={(e) => setNewComment(e.target.value)}
-                            placeholder="Write your comment here..."
-                            required
-                        />
-                        <button type="submit" className="btn bg-blue-500 text-white py-2 px-4 rounded">
-                            Submit Comment
-                        </button>
-                    </form>
                 </div>
             </div>
         </section>
@@ -171,13 +178,13 @@ function TaskDetail() {
 function getStatusClass(status) {
     switch (status) {
         case "todo":
-            return "gray-400";
+            return "text-gray-400";  // Tailwind class for gray
         case "in_progress":
-            return "yellow-500";
+            return "text-yellow-500";  // Tailwind class for yellow
         case "completed":
-            return "green-500";
+            return "text-green-500";  // Tailwind class for green
         default:
-            return "gray-200";
+            return "text-gray-200";  // Default case
     }
 }
 

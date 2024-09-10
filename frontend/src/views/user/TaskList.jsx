@@ -1,80 +1,94 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import useAxios from '../../utils/useAxios';
-import { FaCheckCircle, FaHourglassHalf, FaClipboardList } from 'react-icons/fa';
+import useAxios from "../../utils/useAxios";
+import { FaCheckCircle, FaHourglassHalf, FaClipboardList } from "react-icons/fa";
 
 function TaskList() {
-    const [tasks, setTasks] = useState([]);
-    const axiosInstance = useAxios();
+  const [tasks, setTasks] = useState([]);
+  const axiosInstance = useAxios();
 
-    const fetchTaskData = () => {
-        axiosInstance
-            .get('tasks/')
-            .then((res) => {
-                setTasks(res.data);
-            })
-            .catch((error) => {
-                console.error('Failed to fetch tasks', error);
-            });
-    };
+  const fetchTaskData = () => {
+    axiosInstance
+      .get("tasks/")
+      .then((res) => {
+        setTasks(res.data);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch tasks", error);
+      });
+  };
 
-    useEffect(() => {
-        fetchTaskData();
-    }, []);
+  useEffect(() => {
+    fetchTaskData();
+  }, []);
 
-    return (
-        <>
-            <section className="flex flex-col min-h-screen mt-20">
-                <div className="container mx-auto my-5 flex-grow">
-                    <div className="text-center">
-                        <h1 className="text-3xl font-bold mb-4">Your Tasks</h1>
-                        <p className="text-lg text-gray-600 mb-6">Manage and track your tasks below.</p>
+  return (
+    <>
+      {/* Task List Section */}
+      <section className="min-h-screen flex flex-col mt-20">
+        <div className="container mx-auto flex-grow my-8">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-gray-800">Your Tasks</h1>
+            <p className="text-lg text-gray-600 mt-2">Manage and track your tasks below.</p>
 
-                        {/* Conditionally render the Create Task button */}
-                        {tasks.length > 0 && (
-                            <Link to="/create-task" className="btn btn-primary mb-4">Create a Task</Link>
-                        )}
-                    </div>
+            {/* Create Task Button */}
+            {tasks.length > 0 && (
+              <Link
+                to="/create-task"
+                className="mt-6 inline-block bg-teal-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-teal-600 transition duration-300"
+              >
+                Create a Task
+              </Link>
+            )}
+          </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {tasks.length > 0 ? (
-                            tasks.map((task) => (
-                                <div key={task.id} className="bg-white shadow rounded-lg p-6">
-                                    <Link to={`/tasks/${task.id}`} className="text-decoration-none">
-                                        <h5 className="text-lg font-bold text-gray-900">{task.title}</h5>
-                                        <p className="text-sm text-gray-500 mb-4">
-                                            {task.description || 'No description provided.'}
-                                        </p>
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-sm text-gray-600">Due: {task.due_date || 'N/A'}</span>
-                                            {getStatusIcon(task.status)}
-                                        </div>
-                                    </Link>
-                                </div>
-                            ))
-                        ) : (
-                            <p className="text-center text-gray-600">No tasks available. 
-                                <Link to="/create-task" className="btn btn-primary ml-2">Create a Task</Link>
-                            </p>
-                        )}
-                    </div>
-                </div>
-            </section>
-        </>
-    );
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {tasks.length > 0 ? (
+              tasks.map((task) => (
+                <Link
+                  key={task.id}
+                  to={`/tasks/${task.id}`}
+                  className="block bg-white p-6 shadow-lg rounded-lg hover:shadow-xl transition duration-300"
+                >
+                  <h5 className="text-xl font-bold text-gray-900 mb-2">{task.title}</h5>
+                  <p className="text-gray-500 mb-4">
+                    {task.description || "No description provided."}
+                  </p>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Due: {task.due_date || "N/A"}</span>
+                    {getStatusIcon(task.status)}
+                  </div>
+                </Link>
+              ))
+            ) : (
+              <p className="text-center text-gray-600">
+                No tasks available.
+                <Link
+                  to="/create-task"
+                  className="ml-2 inline-block bg-teal-500 text-white py-2 px-4 rounded-lg hover:bg-teal-600 transition duration-300"
+                >
+                  Create a Task
+                </Link>
+              </p>
+            )}
+          </div>
+        </div>
+      </section>
+    </>
+  );
 }
 
 function getStatusIcon(status) {
-    switch (status) {
-        case "todo":
-            return <FaClipboardList className="text-gray-400" size={20} />;
-        case "in_progress":
-            return <FaHourglassHalf className="text-yellow-400" size={20} />;
-        case "completed":
-            return <FaCheckCircle className="text-green-500" size={20} />;
-        default:
-            return <FaClipboardList className="text-gray-200" size={20} />;
-    }
+  switch (status) {
+    case "todo":
+      return <FaClipboardList className="text-gray-400" size={20} />;
+    case "in_progress":
+      return <FaHourglassHalf className="text-yellow-400" size={20} />;
+    case "completed":
+      return <FaCheckCircle className="text-green-500" size={20} />;
+    default:
+      return <FaClipboardList className="text-gray-200" size={20} />;
+  }
 }
 
 export default TaskList;

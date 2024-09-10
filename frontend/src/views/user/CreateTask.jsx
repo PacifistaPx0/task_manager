@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAxios from '../../utils/useAxios';
-import BaseHeader from '../partials/BaseHeader';
-import BaseFooter from '../partials/BaseFooter';
 
 function CreateTask() {
     const [title, setTitle] = useState('');
@@ -33,60 +31,62 @@ function CreateTask() {
 
     return (
         <>
-            <section className="container d-flex flex-column vh-100" style={{ marginTop: "150px" }}>
-                <div className="container my-5">
-                    <div className="row justify-content-center">
-                        <div className="col-md-8">
-                            <h1 className="fw-bold text-center">Create a New Task</h1>
-                            <form onSubmit={handleSubmit}>
-                                <div className="mb-3">
-                                    <label htmlFor="title" className="form-label">Task Title</label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="title"
-                                        value={title}
-                                        onChange={(e) => setTitle(e.target.value)}
-                                        required
-                                    />
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="description" className="form-label">Description</label>
-                                    <textarea
-                                        className="form-control"
-                                        id="description"
-                                        rows="3"
-                                        value={description}
-                                        onChange={(e) => setDescription(e.target.value)}
-                                    ></textarea>
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="due_date" className="form-label">Due Date</label>
-                                    <input
-                                        type="date"
-                                        className="form-control"
-                                        id="due_date"
-                                        value={dueDate}
-                                        onChange={(e) => setDueDate(e.target.value)}
-                                    />
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="status" className="form-label">Status</label>
-                                    <select
-                                        className="form-select"
-                                        id="status"
-                                        value={status}
-                                        onChange={(e) => setStatus(e.target.value)}
-                                    >
-                                        <option value="todo">To Do</option>
-                                        <option value="in_progress">In Progress</option>
-                                        <option value="completed">Completed</option>
-                                    </select>
-                                </div>
-                                <button type="submit" className="btn btn-primary">Create Task</button>
-                            </form>
+            {/* Create Task Section */}
+            <section className="min-h-screen flex items-center justify-center bg-gray-100">
+                <div className="bg-white shadow-lg rounded-lg p-8 max-w-lg w-full">
+                    <h1 className="text-2xl font-bold text-gray-800 text-center mb-6">Create a New Task</h1>
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div>
+                            <label htmlFor="title" className="block text-gray-600 font-medium mb-2">Task Title</label>
+                            <input
+                                type="text"
+                                id="title"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                required
+                            />
                         </div>
-                    </div>
+                        <div>
+                            <label htmlFor="description" className="block text-gray-600 font-medium mb-2">Description</label>
+                            <textarea
+                                id="description"
+                                rows="4"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500"
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                            ></textarea>
+                        </div>
+                        <div>
+                            <label htmlFor="due_date" className="block text-gray-600 font-medium mb-2">Due Date</label>
+                            <input
+                                type="date"
+                                id="due_date"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500"
+                                value={dueDate}
+                                onChange={(e) => setDueDate(e.target.value)}
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="status" className="block text-gray-600 font-medium mb-2">Status</label>
+                            <select
+                                id="status"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-teal-500 focus:border-teal-500"
+                                value={status}
+                                onChange={(e) => setStatus(e.target.value)}
+                            >
+                                <option value="todo">To Do</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                        <button
+                            type="submit"
+                            className="w-full py-3 px-4 bg-teal-500 text-white font-semibold rounded-lg hover:bg-teal-600 transition duration-300"
+                        >
+                            Create Task
+                        </button>
+                    </form>
                 </div>
             </section>
         </>

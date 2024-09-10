@@ -1,33 +1,35 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import BaseHeader from "../partials/BaseHeader";
-import BaseFooter from "../partials/BaseFooter";
-
 function Dashboard() {
   return (
     <>
-        <section
-            className="container d-flex flex-column vh-100"
-            style={{ marginTop: "150px" }}
-        >
-            <div className="container my-5">
-                <div className="row justify-content-center">
-                <div className="col-md-8 text-center">
-                    <h1 className="fw-bold">Welcome to Your Dashboard</h1>
-                    <p className="lead">This is where you can manage your tasks and view your profile.</p>
-                    <div className="mt-4">
-                    <Link to="/tasks" className="btn btn-primary me-3">
-                        View Tasks
-                    </Link>
-                    <Link to="/profile" className="btn btn-secondary">
-                        View Profile
-                    </Link>
-                    </div>
-                </div>
-                </div>
-            </div>
-        </section>
+      {/* Dashboard Section */}
+      <section className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center max-w-lg mx-auto bg-white shadow-lg rounded-lg p-8">
+          <h1 className="text-3xl font-bold text-gray-800 mb-4">
+            Welcome to Your Dashboard
+          </h1>
+          <p className="text-gray-600 text-lg mb-8">
+            Manage your tasks and view your profile here.
+          </p>
+
+          <div className="flex justify-center space-x-4">
+            <Link
+              to="/tasks"
+              className="px-6 py-3 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition duration-300"
+            >
+              View Tasks
+            </Link>
+            <Link
+              to="/profile"
+              className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-300"
+            >
+              View Profile
+            </Link>
+          </div>
+        </div>
+      </section>
     </>
   );
 }
