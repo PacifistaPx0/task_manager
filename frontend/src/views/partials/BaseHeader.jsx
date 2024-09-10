@@ -58,7 +58,7 @@ function BaseHeader() {
             <>
               <li>
                 <Link
-                  className="text-white border border-white hover:bg-teal-600 hover:text-teal-500 transition-all duration-300 rounded px-4 py-2"
+                  className="text-white border border-white hover:bg-teal-600 hover:text-teal-300 transition-all duration-300 rounded px-4 py-2"
                   to="/login"
                 >
                   Login
@@ -66,7 +66,7 @@ function BaseHeader() {
               </li>
               <li>
                 <Link
-                  className="text-white border border-white hover:bg-teal-600 hover:text-teal-500 transition-all duration-300 rounded px-4 py-2"
+                  className="text-white border border-white hover:bg-teal-600 hover:text-teal-300 transition-all duration-300 rounded px-4 py-2"
                   to="/register"
                 >
                   Register

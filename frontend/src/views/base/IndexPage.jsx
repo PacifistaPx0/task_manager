@@ -5,41 +5,31 @@ import BaseFooter from '../partials/BaseFooter';
 const IndexPage = () => {
     return (
         <>
-            <header className="bg-light py-3">
-                <nav className="container d-flex justify-content-between align-items-center">
-                    <h1 className="logo">TaskManager</h1>
-                    <div>
-                        <Link to="/login" className="btn btn-outline-primary me-2">Login</Link>
-                        <Link to="/signup" className="btn btn-primary">Sign Up</Link>
-                    </div>
-                </nav>
-            </header>
-
             {/* Hero Section */}
-            <section className="hero-section d-flex flex-column align-items-center justify-content-center text-center vh-100 bg-light">
-                <div className="container">
-                    <h2 className="display-4 fw-bold">Manage Your Tasks Effectively</h2>
-                    <p className="lead text-muted my-4">Stay organized, collaborate with your team, and track tasks effortlessly.</p>
-                    <Link to="/signup" className="btn btn-lg btn-primary">Get Started for Free</Link>
+            <section className="hero-section bg-gradient-to-r from-teal-500 to-blue-500 text-white min-h-screen flex flex-col items-center justify-center">
+                <div className="container text-center">
+                    <h1 className="text-5xl font-bold tracking-wide mb-6">Manage Your Tasks Effectively</h1>
+                    <p className="text-lg mb-8 max-w-2xl mx-auto">Stay organized, collaborate with your team, and track tasks effortlessly. Get started today and boost your productivity.</p>
+                    <Link to="/register" className="bg-white text-teal-500 hover:bg-teal-300 hover:text-white transition-all duration-300 px-6 py-3 rounded-lg text-lg font-medium">Get Started for Free</Link>
                 </div>
             </section>
 
             {/* Features Section */}
-            <section className="features-section py-5">
-                <div className="container">
-                    <h3 className="text-center mb-5">Why Choose TaskManager?</h3>
-                    <div className="row">
-                        <div className="col-md-4 text-center">
-                            <h5>Task Tracking</h5>
-                            <p>Organize and prioritize your tasks with ease.</p>
+            <section className="features-section py-16 bg-gray-100">
+                <div className="container mx-auto">
+                    <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">Why Choose TaskManager?</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div className="text-center p-6 bg-white rounded-lg shadow-md">
+                            <h5 className="text-xl font-semibold text-gray-800 mb-4">Task Tracking</h5>
+                            <p className="text-gray-600">Organize and prioritize your tasks with ease using our intuitive task management tools.</p>
                         </div>
-                        <div className="col-md-4 text-center">
-                            <h5>Team Collaboration</h5>
-                            <p>Assign tasks to team members and work together.</p>
+                        <div className="text-center p-6 bg-white rounded-lg shadow-md">
+                            <h5 className="text-xl font-semibold text-gray-800 mb-4">Team Collaboration</h5>
+                            <p className="text-gray-600">Assign tasks to team members, communicate effortlessly, and collaborate in real-time.</p>
                         </div>
-                        <div className="col-md-4 text-center">
-                            <h5>Due Dates & Reminders</h5>
-                            <p>Stay on top of deadlines with automatic reminders.</p>
+                        <div className="text-center p-6 bg-white rounded-lg shadow-md">
+                            <h5 className="text-xl font-semibold text-gray-800 mb-4">Due Dates & Reminders</h5>
+                            <p className="text-gray-600">Stay on top of deadlines with automatic reminders and notifications.</p>
                         </div>
                     </div>
                 </div>
