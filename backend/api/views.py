@@ -12,11 +12,20 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny, IsAu
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from api.serializers import UserSerializer, RegistrationSerializer, TokenObtainPairSerializer, TaskSerializer, CommentSerializer
+from api.serializers import (ProfileSerializer, UserSerializer, RegistrationSerializer, TokenObtainPairSerializer, 
+                             TaskSerializer, CommentSerializer)
 from userauths.models import User, Profile
 from task.models import Task, Comment
 from api.permissions import IsTaskCreatorOrSuperUser, IsAssigned, IsCommentOwnerOrReadOnly
 
+
+class ProfileView(generics.RetrieveUpdateAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user.profile
 
 class UserListView(generics.ListAPIView):
     queryset = User.objects.all()

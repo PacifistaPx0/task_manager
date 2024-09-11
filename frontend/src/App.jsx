@@ -16,6 +16,7 @@ import Dashboard from "./views/user/Dashboard";
 import TaskList from "./views/user/TaskList";
 import TaskDetail from "./views/user/TaskDetail";
 import CreateTask from "./views/user/CreateTask";
+import UserProfile from "./views/user/UserProfile";
 
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
           <Route path="/tasks/" element={<PrivateRoute><Layout><TaskList /></Layout></PrivateRoute>} />
           <Route path="/tasks/:taskId/" element={<PrivateRoute><Layout><TaskDetail /></Layout></PrivateRoute>} />
           <Route path="/create-task/" element={<PrivateRoute><Layout><CreateTask /></Layout></PrivateRoute>} />
+          <Route path="/profile/" element={<PrivateRoute><Layout><UserProfile /></Layout></PrivateRoute>} />
         </Routes>
       </MainWrapper>
     </BrowserRouter>
