@@ -1,7 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import useAxios from "../../utils/useAxios"; // Axios instance to make API calls
 
 function Dashboard() {
+  const [profile, setProfile] = useState(null); // State to store user profile data
+  const axiosInstance = useAxios();
+
+  // Fetch the profile data
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+  const fetchProfile = async () => {
+    try {
+      const response = await axiosInstance.get("/user/profile/"); // Assuming this is the endpoint for user profile
+      setProfile(response.data); // Set profile data in state
+    } catch (error) {
+      console.error("Failed to fetch profile", error);
+    }
+  };
+
   return (
     <>
       {/* Dashboard Section */}
@@ -10,9 +28,25 @@ function Dashboard() {
           <h1 className="text-3xl font-bold text-gray-800 mb-4">
             Welcome to Your Dashboard
           </h1>
-          <p className="text-gray-600 text-lg mb-8">
-            Manage your tasks and view your profile here.
-          </p>
+
+          {/* Profile Section */}
+          {profile ? (
+            <div className="mb-8 text-gray-700">
+              <img
+                src={profile.image} // User profile image
+                alt="Profile"
+                className="w-24 h-24 rounded-full mx-auto mb-4"
+              />
+              <h2 className="text-xl font-semibold">
+                {profile.full_name || "No name available"}
+              </h2>
+              <p>{profile.email || "No email available"}</p>
+              <p>{profile.country || "Country not set"}</p>
+              <p>{profile.bio || "No bio available"}</p>
+            </div>
+          ) : (
+            <p>Loading profile...</p>
+          )}
 
           <div className="flex justify-center space-x-4">
             <Link

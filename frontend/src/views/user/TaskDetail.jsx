@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import useAxios from "../../utils/useAxios";
 import { useAuthStore } from "../../store/auth";
 
+import Select from 'react-select';
+
 function TaskDetail() {
     const { taskId } = useParams();
     const navigate = useNavigate();
@@ -107,9 +109,9 @@ function TaskDetail() {
         }
     };
 
-    const handleUserSelection = (e) => {
-        const selectedOptions = Array.from(e.target.selectedOptions);
-        const selectedUserIds = selectedOptions.map(option => parseInt(option.value));
+    // Modify handleUserSelection for react-select
+    const handleUserSelection = (selectedOptions) => {
+        const selectedUserIds = selectedOptions ? selectedOptions.map(option => option.value) : [];
         setSelectedUsers(selectedUserIds); // Set selected users by their IDs
     };
 
@@ -161,18 +163,19 @@ function TaskDetail() {
                     <div id="assignUsersForm" className="hidden mt-6">
                         <h3 className="text-xl font-bold mb-4">Assign Users to Task</h3>
                         <form onSubmit={handleAssignUsers}>
-                            <select
-                                multiple
-                                className="w-full p-2 border border-gray-300 rounded-lg"
+                            {/* Replace the select with react-select */}
+                            <Select
+                                isMulti
+                                options={allUsers.map(user => ({
+                                    value: user.id,
+                                    label: `${user.full_name} (${user.username})`
+                                }))}
                                 onChange={handleUserSelection}
-                                value={selectedUsers} // Keep track of selected users
-                            >
-                                {allUsers.map(user => (
-                                    <option key={user.id} value={user.id}>
-                                        {user.full_name} ({user.username})
-                                    </option>
-                                ))}
-                            </select>
+                                value={selectedUsers.map(userId => {
+                                    const user = allUsers.find(user => user.id === userId);
+                                    return { value: userId, label: `${user.full_name} (${user.username})` };
+                                })}
+                            />
                             <button
                                 type="submit"
                                 className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
