@@ -58,22 +58,33 @@ class RegistrationSerializer(serializers.ModelSerializer):
     
 class TaskSerializer(serializers.ModelSerializer):
     created_by = serializers.ReadOnlyField(source='created_by.email')
-    assigned_users = UserSerializer(many=True, read_only=True)
+    assigned_users = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=User.objects.all(), required=False
+    )
 
     class Meta:
         model = Task
         fields = ['id', 'title', 'description','status', 'created_by', 'created_at', 'updated_at', 'due_date', 'assigned_users', 'completed_at']
 
-    # def update(self, instance, validated_data):
-    #     # Check if the user is trying to update the assigned_users field
-    #     request = self.context.get('request')
-    #     if 'assigned_users' in validated_data:
-    #         # Apply the custom permission
-    #         permission = IsTaskCreatorOrSuperUser()
-    #         if not permission.has_object_permission(request, None, instance):
-    #             raise serializers.ValidationError("You do not have permission to assign users.")
+    # Customizing how the assigned_users field is represented in the response
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Overwrite assigned_users with detailed user info
+        representation['assigned_users'] = UserSerializer(instance.assigned_users, many=True).data
+        return representation
+    
+    # Field-level validation for assigned_users
+    def validate_assigned_users(self, new_assigned_users):
+        existing_users = []
+        # Check if this is an update request (self.instance will be the current task object)
+        if self.instance and self.instance.assigned_users.exists():
+            # Get the existing assigned users
+            existing_users = list(self.instance.assigned_users.all())
         
-    #     return super().update(instance, validated_data)
+        # Append the new users to the existing ones, ensuring no duplicates
+        combined_users = list(set(existing_users + new_assigned_users))
+        
+        return combined_users
         
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')

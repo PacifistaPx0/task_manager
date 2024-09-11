@@ -9,6 +9,8 @@ function TaskDetail() {
     const [task, setTask] = useState(null);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState("");
+    const [allUsers, setAllUsers] = useState([]); // Added state for all users
+    const [selectedUsers, setSelectedUsers] = useState([]); // Added state for selected users
     const axiosInstance = useAxios();
 
     const user = useAuthStore((state) => state.user);
@@ -17,6 +19,7 @@ function TaskDetail() {
     useEffect(() => {
         fetchTaskDetail();
         fetchTaskComments();
+        fetchAllUsers(); // Fetch all users for assigning
     }, []);
 
     const fetchTaskDetail = () => {
@@ -41,6 +44,17 @@ function TaskDetail() {
             });
     };
 
+    const fetchAllUsers = () => {
+        axiosInstance
+            .get("/users/") // Assuming this is your endpoint to fetch all users
+            .then((res) => {
+                setAllUsers(res.data); // Set the list of all users
+            })
+            .catch((error) => {
+                console.error("Failed to fetch users", error);
+            });
+    };
+
     const handleDeleteTask = async () => {
         if (window.confirm("Are you sure you want to delete this task?")) {
             try {
@@ -49,6 +63,22 @@ function TaskDetail() {
             } catch (error) {
                 console.error("Failed to delete task", error);
             }
+        }
+    };
+
+    const handleAssignUsers = async (e) => {
+        e.preventDefault();
+        console.log("Form submitted with selected users:", selectedUsers); // Check if this log appears
+        try {
+            const payload = {
+                assigned_users: selectedUsers
+            };
+            console.log("Payload being sent:", payload); // Log the payload
+            const response = await axiosInstance.patch(`/tasks/${taskId}/`, payload);
+            console.log("PATCH request response:", response.data);
+            fetchTaskDetail(); // Refresh task details after assignment
+        } catch (error) {
+            console.error("Failed to assign users", error);
         }
     };
 
@@ -77,6 +107,12 @@ function TaskDetail() {
         }
     };
 
+    const handleUserSelection = (e) => {
+        const selectedOptions = Array.from(e.target.selectedOptions);
+        const selectedUserIds = selectedOptions.map(option => parseInt(option.value));
+        setSelectedUsers(selectedUserIds); // Set selected users by their IDs
+    };
+
     if (!task) {
         return <p>Loading task details...</p>;
     }
@@ -103,9 +139,17 @@ function TaskDetail() {
 
                     {/* Buttons */}
                     {isTaskCreator && (
-                        <button className="mt-6 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600" onClick={handleDeleteTask}>
-                            Delete Task
-                        </button>
+                        <div className="flex space-x-4 mt-6">
+                            <button className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600" onClick={handleDeleteTask}>
+                                Delete Task
+                            </button>
+                            <button
+                                className="bg-teal-500 text-white py-2 px-4 rounded-lg hover:bg-teal-600"
+                                onClick={() => document.getElementById('assignUsersForm').classList.toggle('hidden')}
+                            >
+                                Assign Users
+                            </button>
+                        </div>
                     )}
 
                     {!isTaskCreator && isAssignedUser && (
@@ -113,6 +157,30 @@ function TaskDetail() {
                             Remove Assignment
                         </button>
                     )}
+
+                    <div id="assignUsersForm" className="hidden mt-6">
+                        <h3 className="text-xl font-bold mb-4">Assign Users to Task</h3>
+                        <form onSubmit={handleAssignUsers}>
+                            <select
+                                multiple
+                                className="w-full p-2 border border-gray-300 rounded-lg"
+                                onChange={handleUserSelection}
+                                value={selectedUsers} // Keep track of selected users
+                            >
+                                {allUsers.map(user => (
+                                    <option key={user.id} value={user.id}>
+                                        {user.full_name} ({user.username})
+                                    </option>
+                                ))}
+                            </select>
+                            <button
+                                type="submit"
+                                className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+                            >
+                                Assign Users
+                            </button>
+                        </form>
+                    </div>
 
                     {/* Comments Section */}
                     <div className="mt-6">
@@ -157,15 +225,15 @@ function TaskDetail() {
                     <h5 className="text-xl font-semibold mb-4">Assigned Users</h5>
                     {task.assigned_users.length > 0 ? (
                         <ul className="space-y-4">
-                            {task.assigned_users.map((user) => (
-                                <li key={user.id} className="bg-white p-4 rounded-md shadow-md">
-                                    <strong>{user.full_name}</strong>{" "}
-                                    <span className="text-gray-500">({user.username})</span>
-                                    <br />
-                                    <small className="text-gray-400">{user.email}</small>
-                                </li>
-                            ))}
-                        </ul>
+                        {task.assigned_users.map((user) => (
+                            <li key={user.id} className="bg-white p-4 rounded-md shadow-md">
+                                <strong>{user.full_name || "No name available"}</strong>{" "}
+                                <span className="text-gray-500">({user.username || "No username"})</span>
+                                <br />
+                                <small className="text-gray-400">{user.email || "No email"}</small>
+                            </li>
+                        ))}
+                    </ul>
                     ) : (
                         <p className="text-gray-500">No users assigned to this task.</p>
                     )}
@@ -189,3 +257,4 @@ function getStatusClass(status) {
 }
 
 export default TaskDetail;
+
