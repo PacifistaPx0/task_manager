@@ -6,15 +6,18 @@ function Dashboard() {
   const [profile, setProfile] = useState(null); // State to store user profile data
   const axiosInstance = useAxios();
 
-  // Fetch the profile data
+  // Fetch the user info from localStorage
+  const userFromStorage = JSON.parse(localStorage.getItem("allUserData"));
+
+  // Fetch the profile data from the backend if needed
   useEffect(() => {
     fetchProfile();
   }, []);
 
   const fetchProfile = async () => {
     try {
-      const response = await axiosInstance.get("/user/profile/"); // Assuming this is the endpoint for user profile
-      setProfile(response.data); // Set profile data in state
+      const response = await axiosInstance.get("/user/profile/");
+      setProfile(response.data); // Set profile data from API
     } catch (error) {
       console.error("Failed to fetch profile", error);
     }
@@ -26,26 +29,31 @@ function Dashboard() {
       <section className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center max-w-lg mx-auto bg-white shadow-lg rounded-lg p-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-4">
-            Welcome to Your Dashboard
+            Welcome to Your Dashboard, {userFromStorage.full_name}
           </h1>
 
-          {/* Profile Section */}
+          {/* User Info from LocalStorage */}
+          <div className="mb-8 text-gray-700">
+            <h2 className="text-xl font-semibold">{userFromStorage.full_name}</h2>
+            <p>{userFromStorage.email}</p>
+            <p>{userFromStorage.username}</p>
+          </div>
+
+          {/* Additional Profile Info from API */}
           {profile ? (
             <div className="mb-8 text-gray-700">
-              <img
-                src={profile.image} // User profile image
-                alt="Profile"
-                className="w-24 h-24 rounded-full mx-auto mb-4"
-              />
-              <h2 className="text-xl font-semibold">
-                {profile.full_name || "No name available"}
-              </h2>
-              <p>{profile.email || "No email available"}</p>
+              {profile.image && (
+                <img
+                  src={profile.image}
+                  alt="Profile"
+                  className="w-24 h-24 rounded-full mx-auto mb-4"
+                />
+              )}
               <p>{profile.country || "Country not set"}</p>
               <p>{profile.bio || "No bio available"}</p>
             </div>
           ) : (
-            <p>Loading profile...</p>
+            <p>Loading additional profile info...</p>
           )}
 
           <div className="flex justify-center space-x-4">

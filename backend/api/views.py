@@ -2,9 +2,10 @@ import random
 
 from django.conf import settings
 from django.template.loader import render_to_string
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.core.mail import EmailMultiAlternatives
 
+from rest_framework.views import APIView 
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework import status, generics, serializers
@@ -26,6 +27,21 @@ class ProfileView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user.profile
+    
+class RemoveAssignedUserView(APIView):
+    permission_classes = [IsAuthenticated, IsAssigned]
+
+    def post(self, request, task_id):
+        task = get_object_or_404(Task, id=task_id)
+        user = request.user
+
+        if user in task.assigned_users.all():
+            task.assigned_users.remove(user)
+            # task.save() many to many field doesnt require save() 
+            return Response({'detail': 'User removed from task successfully'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'detail': 'User is not assigned to this task'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class UserListView(generics.ListAPIView):
     queryset = User.objects.all()

@@ -87,14 +87,15 @@ function TaskDetail() {
     const handleRemoveAssignment = async () => {
         if (window.confirm("Are you sure you want to remove yourself from this task?")) {
             try {
-                const updatedUsers = task.assigned_users.filter((user) => user.id !== user_id);
-                await axiosInstance.patch(`/tasks/${taskId}/`, { assigned_users: updatedUsers });
-                navigate('/tasks');
+                // Call the new endpoint to remove the user
+                const response = await axiosInstance.post(`/tasks/${taskId}/remove-user/`);
+                console.log(response.data.detail);  // Log success message
+                navigate('/tasks');  // Redirect to task list after removal
             } catch (error) {
                 console.error("Failed to remove assignment", error);
             }
         }
-    };
+    };    
 
     const handleCommentSubmit = async (e) => {
         e.preventDefault();
