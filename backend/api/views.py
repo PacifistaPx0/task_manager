@@ -1,5 +1,6 @@
 import random
 
+from django_filters import rest_framework as filters
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.shortcuts import render, get_object_or_404
@@ -12,12 +13,14 @@ from rest_framework import status, generics, serializers
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
+from django_filters.rest_framework import DjangoFilterBackend
 
 from api.serializers import (ProfileSerializer, UserSerializer, RegistrationSerializer, TokenObtainPairSerializer, 
                              TaskSerializer, CommentSerializer)
 from userauths.models import User, Profile
 from task.models import Task, Comment
 from api.permissions import IsTaskCreatorOrSuperUser, IsAssigned, IsCommentOwnerOrReadOnly
+
 
 
 class ProfileView(generics.RetrieveUpdateAPIView):
@@ -133,10 +136,20 @@ class RegistrationAPIView(generics.CreateAPIView):
 class MyTokenObtainPairAPIView(TokenObtainPairView):
     serializer_class = TokenObtainPairSerializer
 
+class TaskFilter(filters.FilterSet):
+    status = filters.CharFilter(field_name='status', lookup_expr='icontains')
+    created_by = filters.CharFilter(field_name='created_by__email', lookup_expr='icontains')
+
+    class Meta:
+        model = Task
+        fields = ['status', 'due_date', 'created_by']
+
 class TaskListView(generics.ListCreateAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = TaskFilter
 
     def get_queryset(self):
         # Get the base queryset

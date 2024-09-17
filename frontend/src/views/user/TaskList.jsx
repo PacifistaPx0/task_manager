@@ -5,11 +5,14 @@ import { FaCheckCircle, FaHourglassHalf, FaClipboardList } from "react-icons/fa"
 
 function TaskList() {
   const [tasks, setTasks] = useState([]);
+  const [status, setStatus] = useState(""); // State for status filter
+  const [createdBy, setCreatedBy] = useState(""); // State for created by filter
+
   const axiosInstance = useAxios();
 
-  const fetchTaskData = () => {
+  const fetchTaskData = (filters = {}) => {
     axiosInstance
-      .get("tasks/")
+      .get("tasks/", { params: filters }) // Pass the filters as query parameters
       .then((res) => {
         setTasks(res.data);
       })
@@ -18,8 +21,18 @@ function TaskList() {
       });
   };
 
+  const handleFilterSubmit = (e) => {
+    e.preventDefault();
+    // Apply filters when user submits
+    const filters = {
+      status: status || undefined,
+      created_by: createdBy || undefined,
+    };
+    fetchTaskData(filters);
+  };
+
   useEffect(() => {
-    fetchTaskData();
+    fetchTaskData(); // Fetch all tasks on initial render
   }, []);
 
   return (
@@ -42,6 +55,36 @@ function TaskList() {
             )}
           </div>
 
+          {/* Filter Form */}
+          <form className="mb-8 flex space-x-4 justify-center" onSubmit={handleFilterSubmit}>
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className="border p-2 rounded-lg"
+            >
+              <option value="">All Status</option>
+              <option value="todo">To Do</option>
+              <option value="in_progress">In Progress</option>
+              <option value="completed">Completed</option>
+            </select>
+
+            <input
+              type="text"
+              value={createdBy}
+              onChange={(e) => setCreatedBy(e.target.value)}
+              className="border p-2 rounded-lg"
+              placeholder="Created By"
+            />
+
+            <button
+              type="submit"
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-300"
+            >
+              Apply Filters
+            </button>
+          </form>
+
+          {/* Task Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {tasks.length > 0 ? (
               tasks.map((task) => (
