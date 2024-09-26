@@ -1,45 +1,60 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import useAxios from "../../utils/useAxios"; // Axios instance to make API calls
+import useAxios from "../../utils/useAxios";
 
 function Dashboard() {
-  const [profile, setProfile] = useState(null); // State to store user profile data
+  const [profile, setProfile] = useState(null);
+  const [countryFlag, setCountryFlag] = useState(""); // State to store the country flag URL
   const axiosInstance = useAxios();
 
   // Fetch the user info from localStorage
   const userFromStorage = JSON.parse(localStorage.getItem("allUserData"));
 
-  // Fetch the profile data from the backend if needed
   useEffect(() => {
     fetchProfile();
   }, []);
 
+  // Fetch profile from backend
   const fetchProfile = async () => {
     try {
       const response = await axiosInstance.get("/user/profile/");
-      setProfile(response.data); // Set profile data from API
+      const profileData = response.data;
+      setProfile(profileData);
+  
+      // If the country code exists, fetch the country flag
+      if (profileData.country) {
+        fetchCountryFlag(profileData.country); // Using the updated function
+      }
     } catch (error) {
       console.error("Failed to fetch profile", error);
     }
   };
 
+  // Fetch the country flag based on the country name using Rest Countries API
+  const fetchCountryFlag = async (countryCode) => {
+    try {
+      const response = await fetch(`https://restcountries.com/v3.1/alpha/${countryCode}`);
+      const data = await response.json();
+      setCountryFlag(data[0].flags.png); // Save the flag URL in state
+    } catch (error) {
+      console.error("Failed to fetch country flag", error);
+    }
+  };
+
   return (
     <>
-      {/* Dashboard Section */}
       <section className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center max-w-lg mx-auto bg-white shadow-lg rounded-lg p-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-4">
             Welcome to Your Dashboard, {userFromStorage.full_name}
           </h1>
 
-          {/* User Info from LocalStorage */}
           <div className="mb-8 text-gray-700">
             <h2 className="text-xl font-semibold">{userFromStorage.full_name}</h2>
             <p>{userFromStorage.email}</p>
             <p>{userFromStorage.username}</p>
           </div>
 
-          {/* Additional Profile Info from API */}
           {profile ? (
             <div className="mb-8 text-gray-700">
               {profile.image && (
@@ -49,7 +64,23 @@ function Dashboard() {
                   className="w-24 h-24 rounded-full mx-auto mb-4"
                 />
               )}
-              <p>{profile.country || "Country not set"}</p>
+              <div className="flex items-center justify-center">
+                {profile.country ? (
+                  <>
+                    {countryFlag ? (
+                      <img
+                        src={countryFlag}
+                        alt={profile.country}
+                        className="w-8 h-8 mr-2"
+                      />
+                    ) : (
+                      <p>{profile.country}</p> // Display country code if the flag is not available
+                    )}
+                  </>
+                ) : (
+                  <p>Country not set</p>
+                )}
+              </div>
               <p>{profile.bio || "No bio available"}</p>
             </div>
           ) : (

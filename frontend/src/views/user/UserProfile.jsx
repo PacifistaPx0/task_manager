@@ -1,17 +1,29 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
-import countryList from "react-select-country-list";
 import useAxios from "../../utils/useAxios";
 
 function UserProfile() {
     const [profile, setProfile] = useState({});
+    const [countries, setCountries] = useState([]); // State for country options
     const [selectedCountry, setSelectedCountry] = useState(null);
     const [bio, setBio] = useState("");
     const [image, setImage] = useState(null);
     const axiosInstance = useAxios();
-    const options = countryList().getData(); // Country list options
 
+    // Fetch country data from REST Countries API
     useEffect(() => {
+        fetch("https://restcountries.com/v3.1/all")
+            .then((res) => res.json())
+            .then((data) => {
+                const formattedCountries = data.map((country) => ({
+                    value: country.cca2, // Use the country code (cca2) as the value
+                    label: `${country.name.common} (${country.cca2})`,
+                    flag: country.flags.png, // Store the country flag URL
+                }));
+                setCountries(formattedCountries); // Set countries with flags
+            })
+            .catch((error) => console.error("Failed to fetch countries", error));
+
         fetchUserProfile();
     }, []);
 
@@ -48,7 +60,7 @@ function UserProfile() {
                     "Content-Type": "multipart/form-data",
                 },
             })
-            .then((response) => {
+            .then(() => {
                 alert("Profile updated successfully");
             })
             .catch((error) => {
@@ -80,8 +92,16 @@ function UserProfile() {
                 <div>
                     <label className="block text-lg font-medium">Country</label>
                     <Select
-                        options={options}
-                        value={options.find(option => option.value === selectedCountry)}
+                        options={countries.map((country) => ({
+                            value: country.value,
+                            label: (
+                                <div className="flex items-center">
+                                    <img src={country.flag} alt="flag" className="w-5 h-5 mr-2" />
+                                    {country.label}
+                                </div>
+                            ),
+                        }))}
+                        value={countries.find((option) => option.value === selectedCountry)}
                         onChange={handleCountryChange}
                         placeholder="Select a country"
                     />
