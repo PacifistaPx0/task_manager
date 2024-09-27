@@ -59,12 +59,14 @@ class RegistrationSerializer(serializers.ModelSerializer):
 class TaskSerializer(serializers.ModelSerializer):
     created_by = serializers.ReadOnlyField(source='created_by.email')
     assigned_users = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=User.objects.all(), required=False
+        many=True, queryset=User.objects.all(), required=False, write_only=True
     )
+    action = serializers.CharField(required=False, write_only=True)
 
     class Meta:
         model = Task
-        fields = ['id', 'title', 'description','status', 'created_by', 'created_at', 'updated_at', 'due_date', 'assigned_users', 'completed_at']
+        fields = ['id', 'title', 'description','status', 'created_by', 'created_at', 'updated_at', 'due_date', 
+                  'assigned_users', 'completed_at', 'action']
 
     # Customizing how the assigned_users field is represented in the response
     def to_representation(self, instance):
@@ -73,18 +75,42 @@ class TaskSerializer(serializers.ModelSerializer):
         representation['assigned_users'] = UserSerializer(instance.assigned_users, many=True).data
         return representation
     
-    # Field-level validation for assigned_users
-    def validate_assigned_users(self, new_assigned_users):
-        existing_users = []
-        # Check if this is an update request (self.instance will be the current task object)
-        if self.instance and self.instance.assigned_users.exists():
-            # Get the existing assigned users
-            existing_users = list(self.instance.assigned_users.all())
+    def update(self, instance, validated_data):
+        action = validated_data.pop('action', None)
+        print("action: ", action)
+        assigned_users = validated_data.pop('assigned_users', None)
+        instance = super().update(instance, validated_data)
+
+        if assigned_users is not None:
+            if action == 'add':
+                # add new users without removing existing ones
+                instance.assigned_users.add(*assigned_users)
+                print("if did run")
+            
+            elif action == 'remove':
+                # remove users without adding new ones
+                instance.assigned_users.remove(*assigned_users)
+                print("elif did run")
+
+            else:
+                instance.assigned_users.set(assigned_users)
+                print("else is what ran")
+                print(action)
         
-        # Append the new users to the existing ones, ensuring no duplicates
-        combined_users = list(set(existing_users + new_assigned_users))
-        
-        return combined_users
+        return instance
+
+
+    # # Field-level validation for assigned_users
+    # def validate_assigned_users(self, new_assigned_users):
+    #     # If this is an update request
+    #     if self.instance:
+    #         # Combine existing assigned users with new ones
+    #         existing_users = list(self.instance.assigned_users.all())
+    #         combined_users = list(set(existing_users + new_assigned_users))
+    #         return combined_users
+    #     else:
+    #         # For new task creation, return new assigned users
+    #         return new_assigned_users
         
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')

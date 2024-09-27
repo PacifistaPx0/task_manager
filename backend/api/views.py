@@ -182,6 +182,11 @@ class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated, IsAssigned]
 
+    def update(self, request, *args, **kwargs):
+        print("Incoming Request Data:", request.data)  # debug
+        return super().update(request, *args, **kwargs)
+
+
 class CommentListView(generics.ListCreateAPIView):
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated]

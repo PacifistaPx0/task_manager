@@ -55,9 +55,12 @@ function TaskDetail() {
 
     const fetchAllUsers = () => {
         axiosInstance
-            .get("/users/") // Assuming this is your endpoint to fetch all users
+            .get("/users/") // Users endpoint to fetch all users
             .then((res) => {
-                setAllUsers(res.data); // Set the list of all users
+
+                //remove the current user from the list of users
+                const filteredUsers = res.data.filter((user) => user.id!== user_id);
+                setAllUsers(filteredUsers); // Set the list of all users
             })
             .catch((error) => {
                 console.error("Failed to fetch users", error);
@@ -87,7 +90,8 @@ function TaskDetail() {
         e.preventDefault();
         try {
             const payload = {
-                assigned_users: selectedUsers
+                assigned_users: selectedUsers,
+                action: 'add'
             };
             const response = await axiosInstance.patch(`/tasks/${taskId}/`, payload);
             fetchTaskDetail(); // Refresh task details after assignment
@@ -104,13 +108,9 @@ function TaskDetail() {
         }
     
         try {
-            // Create a new list excluding the selected users to be removed
-            const updatedUsers = task.assigned_users
-                .filter(user => !selectedUsers.includes(user.id))
-                .map(user => user.id);
-    
             const payload = {
-                assigned_users: updatedUsers
+                assigned_users: selectedUsers,
+                action: 'remove'
             };
 
             console.log("Payload being sent for removal:", payload); // Debugging
@@ -245,7 +245,7 @@ function TaskDetail() {
                                         className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600"
                                         onClick={handleRemoveSelectedUsers}
                                     >
-                                        Remove Selected Users
+                                        Remove Users
                                     </button>
                                 </form>
                             </div>
