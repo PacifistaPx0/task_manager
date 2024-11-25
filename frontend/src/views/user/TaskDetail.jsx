@@ -234,19 +234,21 @@ function TaskDetail() {
                                             return { value: userId, label: `${user.full_name} (${user.username})` };
                                         })}
                                     />
-                                    <button
-                                        type="submit"
-                                        className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
-                                    >
-                                        Assign Users
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600"
-                                        onClick={handleRemoveSelectedUsers}
-                                    >
-                                        Remove Users
-                                    </button>
+                                    <div className="flex space-x-4">
+                                        <button
+                                            type="submit"
+                                            className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+                                        >
+                                            Assign Users
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="mt-4 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600"
+                                            onClick={handleRemoveSelectedUsers}
+                                        >
+                                            Remove Users
+                                        </button>
+                                    </div>
                                 </form>
                             </div>
                         </>

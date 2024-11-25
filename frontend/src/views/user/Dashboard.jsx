@@ -46,12 +46,11 @@ function Dashboard() {
       <section className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center max-w-lg mx-auto bg-white shadow-lg rounded-lg p-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-4">
-            Welcome to Your Dashboard, {userFromStorage.full_name}
+            Welcome to Your Dashboard
           </h1>
 
           <div className="mb-8 text-gray-700">
             <h2 className="text-xl font-semibold">{userFromStorage.full_name}</h2>
-            <p>{userFromStorage.email}</p>
             <p>{userFromStorage.username}</p>
           </div>
 

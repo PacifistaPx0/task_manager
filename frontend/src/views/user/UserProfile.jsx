@@ -4,6 +4,7 @@ import useAxios from "../../utils/useAxios";
 
 function UserProfile() {
     const [profile, setProfile] = useState({});
+    const [fullName, setFullName] = useState(""); // State for full name
     const [countries, setCountries] = useState([]); // State for country options
     const [selectedCountry, setSelectedCountry] = useState(null);
     const [bio, setBio] = useState("");
@@ -33,6 +34,7 @@ function UserProfile() {
             .then((response) => {
                 const profileData = response.data;
                 setProfile(profileData);
+                // setFullName(profileData.full_name || ""); // Set the initial full name
                 setSelectedCountry(profileData.country); // Set the initial country if present
                 setBio(profileData.bio || "");
             })
@@ -48,6 +50,7 @@ function UserProfile() {
     const handleSubmit = (e) => {
         e.preventDefault();
         const formData = new FormData();
+        // formData.append("full_name", fullName); // Include full name
         formData.append("bio", bio);
         formData.append("country", selectedCountry);
         if (image) {
@@ -87,6 +90,18 @@ function UserProfile() {
                         className="mt-2"
                     />
                 </div>
+
+                {/* Full Name */}
+                {/* <div>
+                    <label className="block text-lg font-medium">Full Name</label>
+                    <input
+                        type="text"
+                        className="w-full p-2 border border-gray-300 rounded"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        placeholder="Enter your full name"
+                    />
+                </div> */}
 
                 {/* Country Selector */}
                 <div>

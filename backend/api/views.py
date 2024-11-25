@@ -183,7 +183,7 @@ class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsAssigned]
 
     def update(self, request, *args, **kwargs):
-        print("Incoming Request Data:", request.data)  # debug
+        # print("Incoming Request Data:", request.data)  # debug
         return super().update(request, *args, **kwargs)
 
 
