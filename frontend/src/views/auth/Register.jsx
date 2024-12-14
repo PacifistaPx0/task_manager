@@ -22,7 +22,7 @@ function Registration() {
       alert(error);
       setIsLoading(false);
     } else {
-      navigate("/"); // Redirect after successful registration
+      navigate("/dashboard"); // Redirect after successful registration
       alert("Registration successful! You are now logged in.");
       setIsLoading(false);
     }
