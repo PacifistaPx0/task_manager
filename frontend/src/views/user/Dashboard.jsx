@@ -50,8 +50,8 @@ function Dashboard() {
           </h1>
 
           <div className="mb-8 text-gray-700">
-            <h2 className="text-xl font-semibold">{userFromStorage.full_name}</h2>
-            <p>{userFromStorage.username}</p>
+            <h2 className="text-xl font-semibold">{userFromStorage.username}</h2>
+            <p>{userFromStorage.email}</p>
           </div>
 
           {profile ? (

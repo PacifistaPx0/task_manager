@@ -4,71 +4,75 @@ import useAxios from "../../utils/useAxios";
 
 function UserProfile() {
     const [profile, setProfile] = useState({});
-    const [fullName, setFullName] = useState(""); // State for full name
-    const [countries, setCountries] = useState([]); // State for country options
-    const [selectedCountry, setSelectedCountry] = useState(null);
+    const [countries, setCountries] = useState([]); // Country options
+    const [selectedCountry, setSelectedCountry] = useState(null); // Selected country code
     const [bio, setBio] = useState("");
     const [image, setImage] = useState(null);
     const axiosInstance = useAxios();
 
-    // Fetch country data from REST Countries API
+    // Fetch countries and user profile
     useEffect(() => {
-        fetch("https://restcountries.com/v3.1/all")
-            .then((res) => res.json())
-            .then((data) => {
-                const formattedCountries = data.map((country) => ({
-                    value: country.cca2, // Use the country code (cca2) as the value
-                    label: `${country.name.common} (${country.cca2})`,
-                    flag: country.flags.png, // Store the country flag URL
-                }));
-                setCountries(formattedCountries); // Set countries with flags
-            })
-            .catch((error) => console.error("Failed to fetch countries", error));
-
+        fetchCountries();
         fetchUserProfile();
     }, []);
 
-    const fetchUserProfile = () => {
-        axiosInstance
-            .get("/user/profile/")
-            .then((response) => {
-                const profileData = response.data;
-                setProfile(profileData);
-                // setFullName(profileData.full_name || ""); // Set the initial full name
-                setSelectedCountry(profileData.country); // Set the initial country if present
-                setBio(profileData.bio || "");
-            })
-            .catch((error) => {
-                console.error("Failed to fetch user profile", error);
-            });
+    // Fetch countries from the backend
+    const fetchCountries = async () => {
+        try {
+            const response = await axiosInstance.get("/countries/");
+            const formattedCountries = response.data.map((country) => ({
+                value: country.cca2, // Use cca2 code
+                label: (
+                    <div className="flex items-center">
+                        <span className="mr-2">{country.flag}</span>
+                        {country.name.common} ({country.cca2})
+                    </div>
+                ),
+            }));
+            setCountries(formattedCountries);
+        } catch (error) {
+            console.error("Failed to fetch countries", error);
+        }
     };
 
+    // Fetch user profile data
+    const fetchUserProfile = async () => {
+        try {
+            const response = await axiosInstance.get("/user/profile/");
+            const profileData = response.data;
+            setProfile(profileData);
+            setSelectedCountry(profileData.country || null); // Preselect country if available
+            setBio(profileData.bio || "");
+        } catch (error) {
+            console.error("Failed to fetch user profile", error);
+        }
+    };
+
+    // Handle country selection change
     const handleCountryChange = (selectedOption) => {
-        setSelectedCountry(selectedOption.value); // Update selected country value
+        setSelectedCountry(selectedOption ? selectedOption.value : null);
     };
 
-    const handleSubmit = (e) => {
+    // Submit profile updates
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData();
-        // formData.append("full_name", fullName); // Include full name
         formData.append("bio", bio);
-        formData.append("country", selectedCountry);
+        formData.append("country", selectedCountry); // Send selected country code
         if (image) {
-            formData.append("image", image); // Add image if selected
+            formData.append("image", image);
         }
 
-        axiosInstance
-            .patch("/user/profile/", formData, {
+        try {
+            await axiosInstance.patch("/user/profile/", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
-            })
-            .then(() => {
-                alert("Profile updated successfully");
-            })
-            .catch((error) => {
-                console.error("Failed to update profile", error);
             });
+            alert("Profile updated successfully");
+        } catch (error) {
+            console.error("Failed to update profile", error);
+        }
     };
 
     return (
@@ -91,34 +95,15 @@ function UserProfile() {
                     />
                 </div>
 
-                {/* Full Name */}
-                {/* <div>
-                    <label className="block text-lg font-medium">Full Name</label>
-                    <input
-                        type="text"
-                        className="w-full p-2 border border-gray-300 rounded"
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
-                        placeholder="Enter your full name"
-                    />
-                </div> */}
-
                 {/* Country Selector */}
                 <div>
                     <label className="block text-lg font-medium">Country</label>
                     <Select
-                        options={countries.map((country) => ({
-                            value: country.value,
-                            label: (
-                                <div className="flex items-center">
-                                    <img src={country.flag} alt="flag" className="w-5 h-5 mr-2" />
-                                    {country.label}
-                                </div>
-                            ),
-                        }))}
+                        options={countries}
                         value={countries.find((option) => option.value === selectedCountry)}
                         onChange={handleCountryChange}
                         placeholder="Select a country"
+                        isClearable
                     />
                 </div>
 

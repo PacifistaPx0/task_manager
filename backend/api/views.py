@@ -1,4 +1,5 @@
 import random
+import requests
 
 from django_filters import rest_framework as filters
 from django.conf import settings
@@ -14,12 +15,29 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny, IsAu
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django_filters.rest_framework import DjangoFilterBackend
+from django.core.cache import cache
 
 from api.serializers import (ProfileSerializer, UserSerializer, RegistrationSerializer, TokenObtainPairSerializer, 
                              TaskSerializer, CommentSerializer)
 from userauths.models import User, Profile
 from task.models import Task, Comment
 from api.permissions import IsTaskCreatorOrSuperUser, IsAssigned, IsCommentOwnerOrReadOnly
+
+
+
+#using api view and not generic view cause we are fetching data from an external api and not our models
+class CountryListView(APIView):
+    def get(self, request, *args, **kwargs):
+        try:
+            # Make the external API call
+            response = requests.get('https://restcountries.com/v3.1/all?fields=name,flag,cca2')
+            if response.status_code == 200:
+                data = response.json()
+                return Response(data, status=status.HTTP_200_OK)
+            else:
+                return Response({'detail': 'Unable to fetch data from external API'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'detail': f'An error occurred: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
