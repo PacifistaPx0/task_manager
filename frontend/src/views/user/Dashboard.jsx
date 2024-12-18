@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useAxios from "../../utils/useAxios";
+import defaultUserImage from "../../assets/default-user.jpg";
 
 function Dashboard() {
   const [profile, setProfile] = useState(null);
@@ -56,13 +57,11 @@ function Dashboard() {
 
           {profile ? (
             <div className="mb-8 text-gray-700">
-              {profile.image && (
-                <img
-                  src={profile.image}
-                  alt="Profile"
-                  className="w-24 h-24 rounded-full mx-auto mb-4"
-                />
-              )}
+              <img
+                src={profile.image || defaultUserImage}
+                alt="Profile"
+                className="w-24 h-24 rounded-full mx-auto mb-4"
+              />
               <div className="flex items-center justify-center">
                 {profile.country ? (
                   <>

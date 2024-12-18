@@ -13,22 +13,22 @@ const useAxios = () => {
     let accessToken = Cookies.get('access_token');
     const refreshToken = Cookies.get('refresh_token');
 
-    console.log('Starting request:', req);
-    console.log('Current access token:', accessToken);
-    console.log('Current refresh token:', refreshToken);
+    // console.log('Starting request:', req);
+    // console.log('Current access token:', accessToken);
+    // console.log('Current refresh token:', refreshToken);
 
     // If there are no tokens, skip token handling
     if (!accessToken || !refreshToken) {
-      console.log('No access or refresh token found, proceeding without token.');
+      // console.log('No access or refresh token found, proceeding without token.');
       return req;
     }
 
     if (isAccessTokenExpired(accessToken)) {
-      console.log('Access token expired, attempting to refresh token...');
+      // console.log('Access token expired, attempting to refresh token...');
 
       try {
         const response = await getRefreshedToken();
-        console.log('Token refresh successful:', response);
+        
 
         accessToken = response.access; //response.data.access was incorrectly loading access token since we already got it from getrefreshedToken
         setAuthUser(accessToken, response.refresh);
@@ -41,11 +41,11 @@ const useAxios = () => {
         return Promise.reject(error);
       }
     } else {
-      console.log('Access token is still valid.');
+      // console.log('Access token is still valid.');
       req.headers.Authorization = `Bearer ${accessToken}`;
     }
 
-    console.log('Request headers after token handling:', req.headers);
+    
     return req;
   });
 

@@ -15,7 +15,7 @@ const useAuthStore = create((set, get) => ({
 
     setUser: (user) => {
         localStorage.setItem('allUserData', JSON.stringify(user));
-        console.log("User data saved to localStorage:", user); // Log the user data
+        // console.log("User data saved to localStorage:", user); // Log the user data
         set({ allUserData: user, loading: false }); // Set loading to false once data is saved
     },
 
@@ -35,10 +35,10 @@ const useAuthStore = create((set, get) => ({
         const access_token = Cookie.get("access_token");
 
         if (access_token) {
-            console.log("Access token found, loading user data from token.");
+            // console.log("Access token found, loading user data from token.");
             await get().fetchUserMetadata(); // Fetch user metadata from API
         } else {
-            console.log("No access token found, user not logged in.");
+            // console.log("No access token found, user not logged in.");
             set({ loading: false }); // If no token, stop loading
         }
     },
@@ -59,7 +59,6 @@ const useAuthStore = create((set, get) => ({
 
             const userData = response.data;
 
-            console.log("Fetched user metadata:", userData); // Log the full user data
             set({
                 allUserData: {
                     user_id: userData.id,

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import useAxios from "../../utils/useAxios";
+import defaultUserImage from "../../assets/default-user.jpg";
 
 function UserProfile() {
     const [profile, setProfile] = useState({});
@@ -83,7 +84,7 @@ function UserProfile() {
                 <div>
                     <label className="block text-lg font-medium">Profile Picture</label>
                     <img
-                        src={profile.image || "/default-user.jpg"}
+                        src={profile.image || defaultUserImage}
                         alt="Profile"
                         className="w-32 h-32 rounded-full mb-4"
                     />

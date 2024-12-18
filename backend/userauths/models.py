@@ -27,7 +27,7 @@ class User(AbstractUser):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.FileField(upload_to='user-folder', default = "default-user.jpg", null=True, blank=True)
+    image = models.FileField(upload_to='user-folder', null=True, blank=True)
     full_name = models.CharField(max_length=100)
     country = models.CharField(max_length=50)
     bio = models.TextField(null=True, blank=True)

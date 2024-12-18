@@ -108,15 +108,17 @@ DATABASES = {
     'default': dj_database_url.config(default=config("DATABASE_URL"), conn_max_age=600)
 }
 
-# for switching between local and development
+# for local development
 # DATABASES = {
-#     'default': dj_database_url.config(
-#         default=config('DATABASE_URL', default=f'postgres://{config("DB_USER")}:{config("DB_PASSWORD")}@{config("DB_HOST")}:{config("DB_PORT")}/{config("DB_NAME")}'),
-#         conn_max_age=600,  # Keep connections alive for performance
-#     )
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': config('DB_NAME'),
+#         'USER': config('DB_USER'),
+#         'PASSWORD': config('DB_PASSWORD'),
+#         'HOST': config('DB_HOST'),
+#         'PORT': config('DB_PORT', default='5432'),
+#     }
 # }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
@@ -152,15 +154,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-if not DEBUG:
-    # Tell Django to copy static assets into a path called `staticfiles` (this is specific to Render)
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    # Enable the WhiteNoise storage backend, which compresses static files to reduce disk use
-    # and renames the files with unique names for each version to support long-term caching
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-else:
-    STATICFILES_DIRS = [os.path.join(BASE_DIR,'static')]
-    STATIC_ROOT = BASE_DIR /'templates'
+
+# Tell Django to copy static assets into a path called `staticfiles` (this is specific to Render)
+STATIC_ROOT = BASE_DIR /'staticfiles'
+# Enable the WhiteNoise storage backend, which compresses static files to reduce disk use
+# and renames the files with unique names for each version to support long-term caching
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR,'static')
+]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR /'media'
