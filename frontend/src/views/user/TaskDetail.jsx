@@ -113,7 +113,7 @@ function TaskDetail() {
                 action: 'remove'
             };
 
-            console.log("Payload being sent for removal:", payload); // Debugging
+            // console.log("Payload being sent for removal:", payload); // Debugging
     
             const response = await axiosInstance.patch(`/tasks/${taskId}/`, payload);
             console.log("PATCH request response:", response.data);
