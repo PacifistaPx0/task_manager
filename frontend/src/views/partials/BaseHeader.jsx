@@ -17,9 +17,9 @@ function BaseHeader() {
     <header className="bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md">
       <nav className="container mx-auto flex justify-between items-center py-4 px-4 md:px-8">
         {/* Branding/Logo */}
-        <Link className="text-2xl font-bold tracking-wider hover:text-gray-200" to="/">
+        <span className="text-2xl font-bold tracking-wider hover:text-gray-200" to="/">
           TaskManager
-        </Link>
+        </span>
 
         {/* Navigation Links */}
         <ul className="flex items-center space-x-6">

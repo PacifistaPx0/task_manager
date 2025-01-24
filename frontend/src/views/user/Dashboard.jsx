@@ -96,7 +96,7 @@ function Dashboard() {
               to="/profile"
               className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-300"
             >
-              View Profile
+              Edit Profile
             </Link>
           </div>
         </div>
