@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 
+from cloudinary.models import CloudinaryField
+
 class User(AbstractUser):
 
     username = models.CharField(max_length=50, unique=True)
@@ -27,7 +29,7 @@ class User(AbstractUser):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.FileField(upload_to='user-folder', null=True, blank=True)
+    image = models.ImageField(upload_to='user-images', null=True, blank=True)
     full_name = models.CharField(max_length=100)
     country = models.CharField(max_length=50)
     bio = models.TextField(null=True, blank=True)
