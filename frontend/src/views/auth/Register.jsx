@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { register } from "../../utils/auth";
+import zxcvbn from "zxcvbn"; // <-- NEW: Import zxcvbn
 
 import BaseHeader from "../partials/BaseHeader";
 import BaseFooter from "../partials/BaseFooter";
@@ -11,19 +12,83 @@ function Registration() {
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  // NEW: Track zxcvbn's score (0-4) and feedback
+  const [zxcvbnScore, setZxcvbnScore] = useState(null);
+  const [zxcvbnFeedback, setZxcvbnFeedback] = useState("");
+
   const navigate = useNavigate();
+
+  // NEW: Convert numeric score to a friendly label
+  const getScoreLabel = (score) => {
+    switch (score) {
+      case 0:
+        return "Very Weak";
+      case 1:
+        return "Weak";
+      case 2:
+        return "Moderate";
+      case 3:
+        return "Strong";
+      case 4:
+        return "Very Strong";
+      default:
+        return "";
+    }
+  };
+
+  // NEW: Handle password input changes & run zxcvbn
+  const handlePasswordChange = (e) => {
+    const pwd = e.target.value;
+    setPassword(pwd);
+
+    if (pwd) {
+      const result = zxcvbn(pwd);
+      setZxcvbnScore(result.score);
+      // If there's a warning (e.g., "This is a top-10 common password"),
+      // display it to the user. If none, just clear it or show "No issues".
+      setZxcvbnFeedback(result.feedback.warning || "");
+    } else {
+      setZxcvbnScore(null);
+      setZxcvbnFeedback("");
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
+    // Basic client-side checks (optional, but recommended)
+    if (password.length < 6) {
+      alert("Password must be at least 6 characters long.");
+      setIsLoading(false);
+      return;
+    }
+
+    if (password !== password2) {
+      alert("Passwords do not match.");
+      setIsLoading(false);
+      return;
+    }
+
+    //    Only accept "Moderate" (2) or above
+    if (zxcvbnScore !== null && zxcvbnScore < 2) {
+      alert("Your password is too weak. Please use a stronger password.");
+      setIsLoading(false);
+      return;
+    }
+
+    // Attempt registration
     const { error } = await register(fullName, email, password, password2);
     if (error) {
+      // If backend sends "password too common" or any other error,
+      // it will show up here
       alert(error);
       setIsLoading(false);
     } else {
-      navigate("/dashboard"); // Redirect after successful registration
+      navigate("/dashboard");
       alert("Registration successful! You are now logged in.");
+
       setIsLoading(false);
     }
   };
@@ -92,8 +157,29 @@ function Registration() {
                 autoComplete="new-password"
                 required
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handlePasswordChange} // <-- use zxcvbn handler
               />
+              {/* NEW: Show zxcvbn strength & feedback */}
+              {zxcvbnScore !== null && (
+                <p className="text-sm mt-1">
+                  <span
+                    className={
+                      zxcvbnScore <= 1
+                        ? "text-red-500"
+                        : zxcvbnScore === 2
+                        ? "text-yellow-500"
+                        : "text-green-500"
+                    }
+                  >
+                    Password Strength: {getScoreLabel(zxcvbnScore)}
+                  </span>
+                  {zxcvbnFeedback && (
+                    <span className="block text-gray-600 mt-1">
+                      Note: {zxcvbnFeedback}
+                    </span>
+                  )}
+                </p>
+              )}
             </div>
 
             {/* Confirm Password */}

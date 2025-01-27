@@ -34,7 +34,8 @@
     "rollup": "^3.29.5",
     "sweetalert2": "^11.7.32",
     "yet-another-react-lightbox": "^3.14.0",
-    "zustand": "^4.4.4"
+    "zustand": "^4.4.4",
+    "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

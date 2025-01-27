@@ -6,6 +6,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 
     
 class UserSerializer(serializers.ModelSerializer):
@@ -42,6 +43,12 @@ class RegistrationSerializer(serializers.ModelSerializer):
     def validate(self, attr):
         if attr['password'] != attr['password2']:
             raise serializers.ValidationError("Passwords must match.")
+        
+        try:
+            validate_password(attr['password'])  # Enforce password validation
+        except ValidationError as e:
+            raise serializers.ValidationError({"password": list(e.messages)})
+        
         return attr
 
     def create(self, validated_data):
