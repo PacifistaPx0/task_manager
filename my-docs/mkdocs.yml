@@ -1,0 +1,19 @@
+site_name: "Task Management System Docs"
+theme: 
+  name: "material"  # Example: Using the Material theme (you'll need to install it)
+
+plugins:
+    - search
+    - mermaid2
+    - render_swagger:
+        allow_arbitrary_locations : true
+
+nav:
+  - Introduction: index.md
+  - Architecture: architecture.md
+  - Setup:
+    - Backend Setup: backend_setup.md
+    - Frontend Setup: frontend_setup.md
+  - API Documentation: api.md
+  - Deployment: deployment.md
+  - FAQ: faq.md

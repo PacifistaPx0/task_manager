@@ -1,0 +1,622 @@
+swagger: '2.0'
+info:
+  title: Richie Task Management APIs
+  description: This is the API documentation for Richie Task Management APIs
+  termsOfService: https://www.google.com/policies/terms/
+  contact:
+    email: richieadigwe@gmail.com
+  license:
+    name: BSD License
+  version: v1
+host: 127.0.0.1:8000
+schemes:
+- http
+basePath: /api/v1
+consumes:
+- application/json
+produces:
+- application/json
+securityDefinitions:
+  Basic:
+    type: basic
+security:
+- Basic: []
+paths:
+  /countries/:
+    get:
+      operationId: countries_list
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+      - countries
+    parameters: []
+  /tasks/:
+    get:
+      operationId: tasks_list
+      description: ''
+      parameters:
+      - name: status
+        in: query
+        description: status
+        required: false
+        type: string
+      - name: due_date
+        in: query
+        description: due_date
+        required: false
+        type: string
+      - name: created_by
+        in: query
+        description: created_by
+        required: false
+        type: string
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Task'
+      tags:
+      - tasks
+    post:
+      operationId: tasks_create
+      description: ''
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Task'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/Task'
+      tags:
+      - tasks
+    parameters: []
+  /tasks/{id}/:
+    get:
+      operationId: tasks_read
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Task'
+      tags:
+      - tasks
+    put:
+      operationId: tasks_update
+      description: ''
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Task'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Task'
+      tags:
+      - tasks
+    patch:
+      operationId: tasks_partial_update
+      description: ''
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Task'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Task'
+      tags:
+      - tasks
+    delete:
+      operationId: tasks_delete
+      description: ''
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+      - tasks
+    parameters:
+    - name: id
+      in: path
+      description: A unique integer value identifying this task.
+      required: true
+      type: integer
+  /tasks/{task_id}/comments/:
+    get:
+      operationId: tasks_comments_list
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Comment'
+      tags:
+      - tasks
+    post:
+      operationId: tasks_comments_create
+      description: ''
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Comment'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/Comment'
+      tags:
+      - tasks
+    parameters:
+    - name: task_id
+      in: path
+      required: true
+      type: string
+  /tasks/{task_id}/comments/{id}/:
+    get:
+      operationId: tasks_comments_read
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Comment'
+      tags:
+      - tasks
+    put:
+      operationId: tasks_comments_update
+      description: ''
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Comment'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Comment'
+      tags:
+      - tasks
+    patch:
+      operationId: tasks_comments_partial_update
+      description: ''
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Comment'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Comment'
+      tags:
+      - tasks
+    delete:
+      operationId: tasks_comments_delete
+      description: ''
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+      - tasks
+    parameters:
+    - name: task_id
+      in: path
+      required: true
+      type: string
+    - name: id
+      in: path
+      description: A unique integer value identifying this comment.
+      required: true
+      type: integer
+  /tasks/{task_id}/remove-user/:
+    post:
+      operationId: tasks_remove-user_create
+      description: ''
+      parameters: []
+      responses:
+        '201':
+          description: ''
+      tags:
+      - tasks
+    parameters:
+    - name: task_id
+      in: path
+      required: true
+      type: string
+  /user/detail/:
+    get:
+      operationId: user_detail_read
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/User'
+      tags:
+      - user
+    parameters: []
+  /user/password-change/:
+    post:
+      operationId: user_password-change_create
+      description: ''
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/User'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/User'
+      tags:
+      - user
+    parameters: []
+  /user/password-reset/{email}/:
+    get:
+      operationId: user_password-reset_read
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/User'
+      tags:
+      - user
+    parameters:
+    - name: email
+      in: path
+      required: true
+      type: string
+  /user/profile/:
+    get:
+      operationId: user_profile_read
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Profile'
+      tags:
+      - user
+    put:
+      operationId: user_profile_update
+      description: ''
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Profile'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Profile'
+      tags:
+      - user
+    patch:
+      operationId: user_profile_partial_update
+      description: ''
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Profile'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/Profile'
+      tags:
+      - user
+    parameters: []
+  /user/register/:
+    post:
+      operationId: user_register_create
+      description: ''
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/Registration'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/Registration'
+      tags:
+      - user
+    parameters: []
+  /user/token/:
+    post:
+      operationId: user_token_create
+      description: ''
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/TokenObtainPair'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/TokenObtainPair'
+      tags:
+      - user
+    parameters: []
+  /user/token/refresh/:
+    post:
+      operationId: user_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      parameters:
+      - name: data
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/TokenRefresh'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/TokenRefresh'
+      tags:
+      - user
+    parameters: []
+  /users/:
+    get:
+      operationId: users_list
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+      tags:
+      - users
+    parameters: []
+definitions:
+  Task:
+    required:
+    - title
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      title:
+        title: Title
+        type: string
+        maxLength: 100
+        minLength: 1
+      description:
+        title: Description
+        type: string
+        x-nullable: true
+      status:
+        title: Status
+        type: string
+        enum:
+        - todo
+        - in_progress
+        - completed
+      created_by:
+        title: Created by
+        type: string
+        readOnly: true
+      created_at:
+        title: Created at
+        type: string
+        format: date-time
+        readOnly: true
+      updated_at:
+        title: Updated at
+        type: string
+        format: date-time
+        readOnly: true
+      due_date:
+        title: Due date
+        type: string
+        format: date
+        x-nullable: true
+      assigned_users:
+        type: array
+        items:
+          type: integer
+        uniqueItems: true
+      completed_at:
+        title: Completed at
+        type: string
+        format: date-time
+        x-nullable: true
+      action:
+        title: Action
+        type: string
+        minLength: 1
+  Comment:
+    required:
+    - content
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      user:
+        title: User
+        type: string
+        readOnly: true
+      created_at:
+        title: Created at
+        type: string
+        readOnly: true
+      content:
+        title: Content
+        type: string
+        minLength: 1
+      task:
+        title: Task
+        type: integer
+        readOnly: true
+  User:
+    required:
+    - full_name
+    - email
+    - username
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      full_name:
+        title: Full name
+        type: string
+        maxLength: 100
+        minLength: 1
+      email:
+        title: Email
+        type: string
+        format: email
+        maxLength: 254
+        minLength: 1
+      username:
+        title: Username
+        type: string
+        maxLength: 50
+        minLength: 1
+  Profile:
+    required:
+    - full_name
+    - country
+    - user
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      image:
+        title: Image
+        type: string
+        readOnly: true
+        x-nullable: true
+        format: uri
+      full_name:
+        title: Full name
+        type: string
+        maxLength: 100
+        minLength: 1
+      country:
+        title: Country
+        type: string
+        maxLength: 50
+        minLength: 1
+      bio:
+        title: Bio
+        type: string
+        x-nullable: true
+      date:
+        title: Date
+        type: string
+        format: date
+        readOnly: true
+      user:
+        title: User
+        type: integer
+  Registration:
+    required:
+    - full_name
+    - email
+    - password
+    - password2
+    type: object
+    properties:
+      full_name:
+        title: Full name
+        type: string
+        maxLength: 100
+        minLength: 1
+      email:
+        title: Email
+        type: string
+        format: email
+        maxLength: 254
+        minLength: 1
+      password:
+        title: Password
+        type: string
+        minLength: 1
+      password2:
+        title: Password2
+        type: string
+        minLength: 1
+  TokenObtainPair:
+    required:
+    - email
+    - password
+    type: object
+    properties:
+      email:
+        title: Email
+        type: string
+        minLength: 1
+      password:
+        title: Password
+        type: string
+        minLength: 1
+  TokenRefresh:
+    required:
+    - refresh
+    type: object
+    properties:
+      refresh:
+        title: Refresh
+        type: string
+        minLength: 1
+      access:
+        title: Access
+        type: string
+        readOnly: true
+        minLength: 1
