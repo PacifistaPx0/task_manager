@@ -17,7 +17,7 @@ This document explains how to install and run the **React + Vite** frontend of t
 If you haven’t already, clone the main repository (which contains both frontend and backend). The frontend code is in the **`frontend/`** directory:
 
 ```bash
-git clone https://github.com/PacifistaPx0/task_manager
+git clone https://github.com/PacifistaPx0/task_manager.git
 cd frontend
 ```
 

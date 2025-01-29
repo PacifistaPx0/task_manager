@@ -18,7 +18,7 @@ This guide will help you quickly set up and run the **Django REST Framework** ba
 If you haven’t already, clone the main repository (which contains both backend and frontend):
 
 ```bash
-git clone https://github.com/PacifistaPx0/task_manager
+git clone https://github.com/PacifistaPx0/task_manager.git
 cd backend
 ```
 
