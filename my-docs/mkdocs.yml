@@ -1,4 +1,5 @@
 site_name: "Task Management System Docs"
+site_dir: site
 theme: 
   name: "material"  # Example: Using the Material theme (you'll need to install it)
 
