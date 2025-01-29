@@ -1,0 +1,979 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../architecture/">
+      
+      
+        <link rel="next" href="../frontend_setup/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.50">
+    
+    
+      
+        <title>Backend Setup - Task Management System Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.a40c8224.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#django-backend-setup" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Task Management System Docs" class="md-header__button md-logo" aria-label="Task Management System Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Task Management System Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Backend Setup
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Task Management System Docs" class="md-nav__button md-logo" aria-label="Task Management System Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Task Management System Docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Architecture
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Setup
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Setup
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Backend Setup
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Backend Setup
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Prerequisites
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-clone-the-repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Clone the Repository
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-create-and-activate-a-virtual-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Create and Activate a Virtual Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-install-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Install Dependencies
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-configure-environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Configure Environment Variables
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-database-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Database Setup
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Database Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-a-using-dj_database_urlconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      Option A: Using dj_database_url.config
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-b-local-db-settings-commented-out-in-settingspy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Option B: Local DB Settings (Commented Out in settings.py)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-migrate-the-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Migrate the Database
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-run-the-development-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. Run the Development Server
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-static-files-and-media" class="md-nav__link">
+    <span class="md-ellipsis">
+      9. Static Files and Media
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-useful-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      10. Useful Commands
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      11. Troubleshooting
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../frontend_setup/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Frontend Setup
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    API Documentation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deployment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Deployment
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FAQ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Prerequisites
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-clone-the-repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Clone the Repository
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-create-and-activate-a-virtual-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Create and Activate a Virtual Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-install-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Install Dependencies
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-configure-environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Configure Environment Variables
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-database-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Database Setup
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Database Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-a-using-dj_database_urlconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      Option A: Using dj_database_url.config
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-b-local-db-settings-commented-out-in-settingspy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Option B: Local DB Settings (Commented Out in settings.py)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-migrate-the-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      7. Migrate the Database
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-run-the-development-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      8. Run the Development Server
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-static-files-and-media" class="md-nav__link">
+    <span class="md-ellipsis">
+      9. Static Files and Media
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-useful-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      10. Useful Commands
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      11. Troubleshooting
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="django-backend-setup">Django Backend Setup</h1>
+<p>This guide will help you quickly set up and run the <strong>Django REST Framework</strong> backend for the <strong>Task Management System</strong>. By the end of these steps, you’ll have a working local environment configured for PostgreSQL (or any database supported by <code>dj_database_url</code>).</p>
+<hr />
+<h2 id="1-prerequisites">1. Prerequisites</h2>
+<ol>
+<li><strong>Python 3.9+</strong></li>
+<li><strong>PostgreSQL</strong> (or an alternative database if you have a remote/PostgreSQL server)</li>
+<li><strong>Git</strong> (to clone the repository)</li>
+<li>An <strong>.env</strong> file or environment variables configured for secrets and DB credentials (using <code>python-decouple</code>)</li>
+</ol>
+<hr />
+<h2 id="2-clone-the-repository">2. Clone the Repository</h2>
+<p>If you haven’t already, clone the main repository (which contains both backend and frontend):</p>
+<pre><code class="language-bash">git clone https://github.com/PacifistaPx0/task_manager.git
+cd backend
+</code></pre>
+<hr />
+<h2 id="3-create-and-activate-a-virtual-environment">3. Create and Activate a Virtual Environment</h2>
+<p>It's recommended to create a Python virtual environment so dependencies don’t conflict with other projects:</p>
+<pre><code class="language-bash"># On macOS/Linux
+python -m venv venv
+source venv/bin/activate
+
+# On Windows
+python -m venv venv
+venv\Scripts\activate
+</code></pre>
+<hr />
+<h2 id="4-install-dependencies">4. Install Dependencies</h2>
+<p>Navigate to the <code>backend/</code> folder and install the required packages from <code>requirements.txt</code>:</p>
+<pre><code class="language-bash">cd backend
+pip install -r requirements.txt
+</code></pre>
+<p>This will install packages like Django, Django REST Framework, dj_database_url, python-decouple, and others:</p>
+<pre><code class="language-bash">asgiref==3.8.1
+Django==5.0.7
+djangorestframework==3.15.2
+...
+whitenoise==6.8.2
+</code></pre>
+<hr />
+<h2 id="5-configure-environment-variables">5. Configure Environment Variables</h2>
+<p>The project uses <strong>python-decouple</strong> to load environment variables from a file named <strong><code>.env</code></strong>. You’ll need to create a <code>.env</code> file in the <strong>backend</strong> directory (the same folder as <code>settings.py</code>). Below is an example of what it might include (adjust values for your local environment):</p>
+<pre><code class="language-bash"># .env file (do NOT commit real secrets to version control)
+SECRET_KEY=&quot;django-insecure-replace-with-a-real-key&quot;
+DEBUG=True
+ALLOWED_HOSTS=127.0.0.1,localhost
+
+# PostgreSQL example (local)
+DATABASE_URL=&quot;postgres://db_user:db_password@127.0.0.1:5432/task_management_db&quot;
+
+# Cloudinary (for media storage)
+CLOUDINARY_CLOUD_NAME=&quot;your-cloud-name&quot;
+CLOUDINARY_API_KEY=&quot;your-cloudinary-key&quot;
+CLOUDINARY_API_SECRET=&quot;your-cloudinary-secret&quot;
+
+# Mailgun (for sending emails)
+MAILGUN_API_KEY=&quot;your-mailgun-key&quot;
+MAILGUN_SENDER_DOMAIN=&quot;your-mailgun-domain&quot;
+FROM_EMAIL=&quot;no-reply@yourdomain.com&quot;
+</code></pre>
+<p><strong>Note:</strong>
+- <code>SECRET_KEY</code>: Replace with a secure, randomly generated key.
+- <code>DEBUG</code>: Should be <code>False</code> in production.
+- <code>ALLOWED_HOSTS</code>: Comma-separated list of hosts or domains that can serve the project.
+- <code>DATABASE_URL</code>: Points to your local or remote PostgreSQL instance.
+- Never commit this <code>.env</code> file to public version control.</p>
+<hr />
+<h2 id="6-database-setup">6. Database Setup</h2>
+<h3 id="option-a-using-dj_database_urlconfig">Option A: Using <code>dj_database_url.config</code></h3>
+<p>By default, <code>dj_database_url.config</code> in <code>settings.py</code> will read from your <code>DATABASE_URL</code> environment variable:</p>
+<pre><code class="language-python">DATABASES = {
+    'default': dj_database_url.config(
+        default=config(&quot;DATABASE_URL&quot;), 
+        conn_max_age=600
+    )
+}
+</code></pre>
+<p>Ensure that <code>DATABASE_URL</code> in your <code>.env</code> points to a valid PostgreSQL instance. For example:</p>
+<pre><code class="language-bash">DATABASE_URL=&quot;postgres://db_user:db_password@localhost:5432/task_management_db&quot;
+</code></pre>
+<p>Confirm that PostgreSQL is running locally or that you have network access to the remote DB.</p>
+<h3 id="option-b-local-db-settings-commented-out-in-settingspy">Option B: Local DB Settings (Commented Out in <code>settings.py</code>)</h3>
+<p>If you prefer not to use <code>dj_database_url</code>, you can uncomment and use the following block in <code>settings.py</code>:</p>
+<pre><code class="language-python">DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT', default='5432'),
+    }
+}
+</code></pre>
+<p>And in your <code>.env</code>:</p>
+<pre><code class="language-bash">DB_NAME=&quot;task_management_db&quot;
+DB_USER=&quot;postgres&quot;
+DB_PASSWORD=&quot;...&quot;
+DB_HOST=&quot;localhost&quot;
+DB_PORT=&quot;5432&quot;
+</code></pre>
+<hr />
+<h2 id="7-migrate-the-database">7. Migrate the Database</h2>
+<p>After configuring your <code>.env</code> and database settings, run migrations:</p>
+<pre><code class="language-bash">python manage.py migrate
+</code></pre>
+<p>This will create all the necessary tables for Django’s built-in apps as well as your custom apps (<code>api</code>, <code>task</code>, <code>userauths</code>).</p>
+<p>Creating a superuser (for Django admin access), run:</p>
+<pre><code class="language-bash">python manage.py createsuperuser
+</code></pre>
+<hr />
+<h2 id="8-run-the-development-server">8. Run the Development Server</h2>
+<p>Launch the local dev server:</p>
+<pre><code class="language-bash">python manage.py runserver
+</code></pre>
+<p>By default, Django will listen on <code>http://127.0.0.1:8000</code>. You can visit that URL in your browser to confirm everything is working. If you have Django REST Framework browsable API views configured, you’ll see them.</p>
+<hr />
+<h2 id="9-static-files-and-media">9. Static Files and Media</h2>
+<p><strong>Static Files:</strong>
+- The project uses WhiteNoise (<code>whitenoise.middleware.WhiteNoiseMiddleware</code>) for static file handling in production.
+- Locally, Django’s dev server serves static files automatically.</p>
+<p><strong>Media Files:</strong>
+- For media uploads, the project uses Cloudinary (<code>cloudinary_storage.storage.MediaCloudinaryStorage</code>) if <code>CLOUDINARY_*</code> env variables are set.
+- Check <code>settings.py</code> for the <code>DEFAULT_FILE_STORAGE</code> configuration.</p>
+<hr />
+<h2 id="10-useful-commands">10. Useful Commands</h2>
+<ul>
+<li>
+<p><strong>Install a New Package:</strong>
+  <code>bash
+  pip install &lt;package_name&gt;
+  pip freeze &gt; requirements.txt  # update the requirements file</code></p>
+</li>
+<li>
+<p><strong>Run Tests:</strong>
+  <code>bash
+  python manage.py test
+  # or to check coverage if you use the coverage library
+  coverage run manage.py test
+  coverage report -m</code></p>
+</li>
+<li>
+<p><strong>Compile Messages/Translations (if using i18n features):</strong>
+  <code>bash
+  django-admin makemessages
+  django-admin compilemessages</code></p>
+</li>
+</ul>
+<hr />
+<h2 id="11-troubleshooting">11. Troubleshooting</h2>
+<ul>
+<li><strong>Cannot connect to database:</strong></li>
+<li>Check if PostgreSQL is running.</li>
+<li>
+<p>Verify your <code>DATABASE_URL</code> or local DB settings.</p>
+</li>
+<li>
+<p><strong>Missing .env variables:</strong></p>
+</li>
+<li>
+<p>Make sure <code>.env</code> is in the correct directory (same as <code>settings.py</code>) and that you have <code>python-decouple</code> installed.</p>
+</li>
+<li>
+<p><strong>Static files not loading:</strong></p>
+</li>
+<li>Ensure <code>whitenoise.middleware.WhiteNoiseMiddleware</code> is in <code>MIDDLEWARE</code>.</li>
+<li>
+<p>Run <code>collectstatic</code> if you’re simulating a production environment.</p>
+</li>
+<li>
+<p><strong>Email sending issues:</strong></p>
+</li>
+<li>Double-check your Mailgun or other email provider credentials in <code>.env</code>.</li>
+</ul>
+<hr />
+<h2 id="conclusion">Conclusion</h2>
+<p>By following the steps above, you will have a fully functional Django REST backend for the Task Management System. Here’s a quick recap:</p>
+<ol>
+<li><strong>Install Dependencies</strong></li>
+<li>
+<p>Use a dedicated Python virtual environment and run <code>pip install -r requirements.txt</code> in the <code>backend/</code> folder.</p>
+</li>
+<li>
+<p><strong>Configure Environment Variables</strong></p>
+</li>
+<li>
+<p>Create a <code>.env</code> file (using <code>python-decouple</code>) to store sensitive information like <code>SECRET_KEY</code>, <code>DATABASE_URL</code>, and any third-party credentials.</p>
+</li>
+<li>
+<p><strong>Migrate the Database</strong></p>
+</li>
+<li>
+<p>Run <code>python manage.py migrate</code> to set up your tables and <code>python manage.py createsuperuser</code> if you need admin access.</p>
+</li>
+<li>
+<p><strong>Run the Server</strong></p>
+</li>
+<li>
+<p>Launch with <code>python manage.py runserver</code> to start the dev server on <code>http://127.0.0.1:8000</code>.</p>
+</li>
+<li>
+<p><strong>Additional Services</strong></p>
+</li>
+<li>WhiteNoise for static files and Cloudinary for media uploads (if configured).</li>
+<li>CORS headers enabled for cross-origin requests from your React frontend.</li>
+</ol>
+<p>At this point, your Django REST Framework API should be ready to handle requests from the frontend or any HTTP client. Refer back to this guide whenever you need to reinstall, reconfigure, or troubleshoot your backend environment. If you encounter any issues, be sure to consult the <strong>Troubleshooting</strong> section, the <a href="https://docs.djangoproject.com/en/5.1/">Django</a> and <a href="https://www.django-rest-framework.org/">Django Rest Framework</a> documentation, or your version control history for further clues.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.60a45f97.min.js"></script>
+      
+    
+  </body>
+</html>
