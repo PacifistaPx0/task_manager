@@ -6,9 +6,11 @@ A full-stack web application for managing tasks, built using Django REST Framewo
 
 The Task Management System is a web application designed to help users effectively organize and manage their tasks. It provides a user-friendly interface for creating, updating, and tracking tasks, as well as features for collaborating with team members.
 
+Official documentation can be found on https://majortask-demo-documentation.netlify.app/
+
 <h2>Current Status</h2>
 
-The Task Management System is currently under active development.
+Version 1 deployed
 
 <h2>Features</h2>
 
